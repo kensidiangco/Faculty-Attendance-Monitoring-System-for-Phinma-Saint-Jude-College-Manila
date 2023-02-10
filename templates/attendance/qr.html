@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Attendance | Scan QR{% endblock title %}
+
+{% block content %}
+    <script type="text/javascript" src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+
+    <video id="preview">open camera</video>
+    <audio id="scan-sound" src="{% static './audio/scan_success.mp3'%}"></audio>
+
+    <form method="POST" id="qr-code-form">
+        {% csrf_token %}
+        <input type="text" name="qr_code_content" id="qr-code-content"/>
+        <input type="submit" value="submit" hidden/>
+    </form>
+
+    <script>
+        let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+        let scanSound = document.getElementById('scan-sound');
+        let qrCodeForm = document.getElementById('qr-code-form');
+        let qrCodeContentInput = document.getElementById('qr-code-content');
+        scanner.addListener('scan', function (content) {
+            scanSound.currentTime = 0;
+            scanSound.play();
+            console.log(content)
+            qrCodeContentInput.value = content;
+            qrCodeForm.submit()
+        });
+        
+        Instascan.Camera.getCameras().then(function (cameras) {
+
+        if (cameras.length > 0) {
+            scanner.start(cameras[0]);
+        } else {
+            console.error('No cameras found.');
+        }
+        }).catch(function (e) {
+            console.error(e);
+        });    
+    </script
+{% endblock content %}
