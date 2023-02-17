@@ -42,6 +42,7 @@ class Employee(models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
     position = models.ForeignKey(Employee_Position, on_delete=models.CASCADE)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, default="out")
     date_created = models.DateTimeField(auto_now=False, auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
@@ -61,8 +62,7 @@ class Schedule(models.Model):
         return self.subject.subject_name
 
 class Employee_DTR(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="employee")
     time_in = models.DateTimeField(auto_now=False, auto_now_add=True)
     time_out = models.DateTimeField(null=True)
     status = models.CharField(max_length=100, blank=True, null=True)
