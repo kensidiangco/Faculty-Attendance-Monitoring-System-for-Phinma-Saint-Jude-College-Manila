@@ -1,0 +1,31 @@
+{% load static %}
+<div class="md:flex hidden pr-4 flex-col">
+    <div class="flex py-4 flex-col flex-end items-end">
+        <div class="flex items-center gap-4">
+            <div>
+                <p class="flex-end">Hello! <span class="font-bold">{{request.user.username}}<span></p>
+                <p class="flex-end text-sm text-gray-500 uppercase">{{request.user.username}}</p>
+            </div>
+            <div>
+                <button onClick="OpenModal()"><span class="notif-count"></span><img src="{% static 'images/avatar.png'%}" class="cursor-pointer transition transition-delay-1" style="width: 3.5em;" /></button>
+            </div>
+            <div id="modal" class="hidden absolute top-16 p-4 backdrop-blur-xl bg-white/60 rounded-md z-50 flex flex-col gap-4 font-bold right-10 border shadow-xl">
+                {% comment %} <a href="{%url 'Admin_dashboard'%}" class="hover:drop-shadow-xl transition transition-delay-1">Dashboard</a> {% endcomment %}
+                <a href="{% url 'User_logout' %}" class="hover:drop-shadow-xl transition transition-delay-1">Logout</a>
+                
+            </div>
+        </div>
+    </div>
+    <div class="sticky top-0">
+        <p class="text-2xl py-2 font-bold">Notes</p>
+        <div class="pt-1 backdrop-blur-3xl bg-white/70 shadow-xl rounded-md border-2 border-green-300">
+            <div class="p-4">
+                <p class="font-bold text-xl py-2">Sample notes.</p>
+                <p class="text-md px-2">This is my sample notes.</p>
+            </div>
+            <div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/profile_modal.js' %}"></script>

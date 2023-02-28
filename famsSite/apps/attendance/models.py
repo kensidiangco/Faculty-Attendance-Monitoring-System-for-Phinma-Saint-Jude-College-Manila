@@ -1,7 +1,14 @@
 from django.db import models
 
+class Employee_Status(models.Model):
+    name = models.CharField(max_length=100)
+    date_created = models.DateTimeField(auto_now=False, auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
+
+    def __str__(self):
+        return self.name
 class Department(models.Model):
-    department_name = models.CharField(max_length=100, blank=False, null=False)
+    department_name = models.CharField(max_length=100, blank=False, null=False, unique=True)
     address = models.CharField(max_length=100, blank=False, null=False)
     room_no = models.CharField(max_length=100, blank=False, null=False)
     floor = models.CharField(max_length=100, blank=False, null=False)
@@ -20,6 +27,7 @@ class Employee_Position(models.Model):
         return self.position
 
 class Subject(models.Model):
+    subject_code = models.CharField(max_length=100, blank=True, null=True, unique=True)
     subject_name = models.CharField(max_length=100, blank=False, null=False)
     year = models.CharField(max_length=100, blank=True, null=True)
     semester = models.CharField(max_length=100, blank=True, null=True)
@@ -30,7 +38,7 @@ class Subject(models.Model):
         return self.subject_name
 
 class Weekday(models.Model):
-    Weekday = models.CharField(max_length=100, blank=False, null=False)
+    Weekday = models.CharField(max_length=100, blank=False, null=False, unique=True)
     date_created = models.DateTimeField(auto_now=False, auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
@@ -42,6 +50,7 @@ class Employee(models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
     position = models.ForeignKey(Employee_Position, on_delete=models.CASCADE)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    employee_status = models.ForeignKey(Employee_Status, on_delete=models.CASCADE, null=True, blank=True)
     status = models.CharField(max_length=20, default="out")
     date_created = models.DateTimeField(auto_now=False, auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)

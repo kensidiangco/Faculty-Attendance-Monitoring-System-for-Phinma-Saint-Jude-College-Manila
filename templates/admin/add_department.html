@@ -1,0 +1,43 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block title %}FAMS | Create Department{% endblock title %}
+
+{% block content %}
+    <p class="font-bold text-xl my-4">Create Department</p>
+    <div class="flex">
+        <p class="pb-4 px-2">{{date_today}}</p>
+    </div>
+    <div class="flex justify-center items-center">
+        <div class="bg-white p-4 rounded-md shadow-xl w-7/12">
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    <p class="text-sm text-red-600 py-2 text-center">{{ message }}</p>
+                {% else %}
+                    <p class="text-sm text-green-600 py-2 text-center">{{ message }}</p>
+                {% endif %}
+            {% endfor %}
+            <p class="font-bold text-xl pb-4 px-2 pt-2">Create new department details.</p>
+            <form method="POST" class="flex flex-col gap-2">
+                {% csrf_token %}
+                <div class="flex flex-col">
+                    <label class="text-sm text-gray-500 font-bold">DEPARTMENT NAME (INITIAL)</label>
+                    {{form.department_name}}
+                </div>
+                <div class="flex flex-col">
+                    <label class="text-sm text-gray-500 font-bold">ADDRESS</label>
+                    {{form.address}}
+                </div>
+                <div class="flex flex-col">
+                    <label class="text-sm text-gray-500 font-bold">ROOM NUMBER</label>
+                    {{form.room_no}}
+                </div>
+                <div class="flex flex-col">
+                    <label class="text-sm text-gray-500 font-bold">FLOOR LEVEL</label>
+                    {{form.floor}}
+                </div>
+                <input type="submit" value="Create" class="p-2 rounded-md bg-green-600 font-bold text-white hover:bg-green-500 cursor-pointer"/>
+            </form>
+        </div>
+    </div>
+
+{% endblock content %}

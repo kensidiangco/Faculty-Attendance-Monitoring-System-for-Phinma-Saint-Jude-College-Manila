@@ -2,11 +2,13 @@ import os
 from datetime import datetime, date, time
 import pytz
 import time
+import qrcode
 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from .models import Employee, Employee_DTR, Department, Schedule
+from .forms import EmployeeForm, DepartmentForm, SubjectForm, ScheduleForm
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse, reverse_lazy
 from django.core.paginator import Paginator
@@ -19,6 +21,8 @@ from PIL import Image
 from pyzbar.pyzbar import decode
 from utils.camera_streaming_widget import CameraStreamingWidget
 
+date_today = datetime.now().strftime('%B %d, %Y %I:%M %p')
+
 def Login_page(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -27,7 +31,7 @@ def Login_page(request):
         if user:
             if user.is_active:
                 login(request,user)
-                return HttpResponseRedirect(reverse('Admin_dashboard'))
+                return HttpResponseRedirect(reverse('DTR_Export'))
             else:
                 return HttpResponse("Your account was inactive.")
         else:
@@ -42,7 +46,6 @@ def User_logout(request):
 
 @login_required(login_url=reverse_lazy("Login_page"))
 def Admin_dashboard(request):
-    date_today = datetime.now().strftime('%B %d, %Y %I:%M %p')
     employees = Employee.objects.all().count()
     departments = Department.objects.all().count()
     schedules = Schedule.objects.all().count()
@@ -62,7 +65,6 @@ def QRPage(request):
     if request.method == 'POST':
         qr_code_content = request.POST.get('qr_code_content')
         emp = Employee.objects.get(employee_ID=str(qr_code_content))
-        print(emp.status)
 
         if emp.status == 'out':
             emp_dtr = Employee_DTR.objects.create(
@@ -116,6 +118,7 @@ def QRPage(request):
         
     return render(request, './attendance/qr.html')
 
+@login_required(login_url=reverse_lazy("Login_page"))
 def QRSuccessPage(request):
     return render(request, './attendance/qr_success.html')
 
@@ -178,6 +181,141 @@ def DTR_Export(request):
         'records_count': records_count
     }
     return render(request, './admin/dtr_export.html', ctx)
+
+@login_required(login_url=reverse_lazy("Login_page"))
+def Add_Employee_Page(request):
+    form = EmployeeForm
+
+    if request.method == "POST":
+        empForm = EmployeeForm(request.POST)
+        if empForm.is_valid():
+            emp = empForm.save(commit=False)
+            name = empForm.cleaned_data.get('name')
+            emp.save()
+            messages.success(request, '{} employee successfully created'.format(name))
+            return HttpResponseRedirect(reverse('Add_Employee_Page'))
+            
+        else:
+            messages.error(request, form.errors)
+    ctx = {
+        'form' : form,
+        'date_today': date_today
+    }
+    return render(request, './admin/add_employee.html',ctx)
+
+@login_required(login_url=reverse_lazy("Login_page"))
+def Add_Department_Page(request):
+    form = DepartmentForm
+
+    if request.method == "POST":
+        deptForm = DepartmentForm(request.POST)
+        if deptForm.is_valid():
+            dept = deptForm.save(commit=False)
+            name = deptForm.cleaned_data.get('department_name')
+            dept.save()
+            messages.success(request, '{} Department successfully created'.format(name))
+            return HttpResponseRedirect(reverse('Add_Department_Page'))
+            
+        else:
+            messages.error(request, form.errors)
+    ctx = {
+        'form' : form,
+        'date_today': date_today
+    }
+    return render(request, './admin/add_department.html',ctx)
+
+@login_required(login_url=reverse_lazy("Login_page"))
+def Add_Subject_Page(request):
+    form = SubjectForm
+
+    if request.method == "POST":
+        subjForm = SubjectForm(request.POST)
+        if subjForm.is_valid():
+            subj = subjForm.save(commit=False)
+            name = subjForm.cleaned_data.get('subject_name')
+            subj.save()
+            messages.success(request, '{} employee successfully created'.format(name))
+            return HttpResponseRedirect(reverse('Add_Subject_Page'))
+            
+        else:
+            messages.error(request, form.errors)
+
+    ctx = {
+        'form' : form,
+        'date_today': date_today
+    }
+    return render(request, './admin/add_subject.html',ctx)
+
+@login_required(login_url=reverse_lazy("Login_page"))
+def Add_Schedule_Page(request):
+    form = ScheduleForm
+
+    if request.method == "POST":
+        schedForm = ScheduleForm(request.POST)
+        if schedForm.is_valid():
+            sched = schedForm.save(commit=False)
+            sched.save()
+            messages.success(request, 'Sched successfully created')
+            return HttpResponseRedirect(reverse('Add_Schedule_Page'))
+            
+        else:
+            messages.error(request, form.errors)
+
+    ctx = {
+        'form' : form,
+        'date_today': date_today
+    }
+    return render(request, './admin/add_Schedule.html',ctx)
+
+@login_required(login_url=reverse_lazy("Login_page"))
+def Employee_list(request):
+    emps = Employee.objects.all()
+    paginator = Paginator(emps, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    emps_count = len(emps)
+    ctx = {
+        'date_today': date_today,
+        'emps': emps,
+        'emps_count': emps_count,
+        'page_obj': page_obj
+    }
+    return render(request, './admin/employees.html', ctx)
+
+@login_required(login_url=reverse_lazy("Login_page"))
+def Department_list(request):
+    depts = Department.objects.all()
+    paginator = Paginator(depts, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    depts_count = len(depts)
+    ctx = {
+        'date_today': date_today,
+        'depts': depts,
+        'depts_count': depts_count,
+        'page_obj': page_obj
+    }
+    return render(request, './admin/departments.html', ctx)
+
+@login_required(login_url=reverse_lazy("Login_page"))
+def Generate_QR_page(request):
+    if request.method == 'POST':
+        if 'generate_qr' in request.POST:
+            data = request.POST.get('qr_url')
+            qr = qrcode.QRCode(version=1, box_size=30, border=2)
+            qr.add_data(data)
+            qr.make(fit=True)
+            img = qr.make_image(fill_color="black", back_color="white")
+            
+            # Render the QR code image in your template
+            response = HttpResponse(content_type='image/png')
+            response['Content-Disposition'] = 'attachment; filename="{}_QRCode.png"'.format(data)
+            img.save(response, 'PNG')
+            return response
+    else:
+        # Render the form in your template
+        return render(request, './attendance/generate_qr.html')
+
 
 # pyzbar
 # def is_ajax(request):
