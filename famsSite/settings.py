@@ -14,8 +14,9 @@ SECRET_KEY = 'your_secret'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-CORS_ORIGIN_ALLOW_ALL = True
+ALLOWED_HOSTS = ['192.168.254.182', '127.0.0.1', 'localhost']
+CORS_ORIGIN_WHITELIST = ['http://192.168.254.182:8000']
+# CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 
@@ -29,9 +30,22 @@ INSTALLED_APPS = [
 
     'famsSite.apps.attendance',
     "corsheaders",
+
+    'tailwind',
+    'theme',
+    'django_browser_reload',
 ]
 
+# TAILWIND CONFIGURATION
+TAILWIND_APP_NAME = 'theme'
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
+
+
 MIDDLEWARE = [
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -103,7 +117,6 @@ TIME_ZONE = 'Asia/Manila'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/

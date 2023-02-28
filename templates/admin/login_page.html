@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}FAMS | Login{% endblock title %}
+
+{% block content %}
+<div class="">
+    <div class="">
+        {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <p class="">{{ message }}</p>
+        {% else %}
+            <p class="">{{ message }}</p>
+            {% endif %}
+        {% endfor %}
+        <h1 class="">Login your account.</h1>
+        <form method="POST" class="">
+            {% csrf_token %}
+            <input type="text" class="" id="username" name="username" placeholder="Username" autocapitalize="none" autofocus required>
+            <input type="password" class="" id="password" name="password" placeholder="password" autocapitalize="none" required>
+            <input type="submit" class="" value="Login">
+        </form>
+        <div class="">
+            <a href="" class="text-sm cursor-pointer">Forgot password?</a>
+            <a href="" class="text-sm cursor-pointer">Doesn't have an account? request one.</a>
+        </div>        
+    </div>
+</div>
+    
+{% endblock content %}

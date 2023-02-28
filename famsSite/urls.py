@@ -6,6 +6,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('famsSite.apps.attendance.urls')),
+
+    path("__reload__/", include("django_browser_reload.urls")),
 ]
 
 if settings.DEBUG: 

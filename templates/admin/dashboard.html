@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}FAMS | Dashboard{% endblock title %}
+
+{% block content %}
+    <p class="font-bold text-xl my-4">Dashboard</p>
+    <div class="flex">
+        <p class="px-4 py-2">{{date_today}}</p>
+    </div>
+    
+    <div class="py-4">
+        <div class="flex gap-4 justify-center">
+            <div class="p-4 shadow-xl border-l-8 border-green-600 rounded-md bg-white">
+                <p>Employee count</p>
+                <p class="font-bold">{{employees}}</p>
+            </div>
+            <div class="p-4 shadow-xl border-l-8 border-green-600 rounded-md bg-white">
+                <p>Departments</p>
+                <p class="font-bold">{{departments}}</p>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,14 @@
+.body-content {
+    background-color: red;
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+.left-panel {
+    
+}
+.mid-panel {
+
+}
+.right-panel {
+
+}

@@ -63,11 +63,49 @@ class Schedule(models.Model):
 
 class Employee_DTR(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="employee")
+    weekday = models.CharField(max_length=20, blank=True, null=True)
     time_in = models.DateTimeField(auto_now=False, auto_now_add=True)
     time_out = models.DateTimeField(null=True)
+    total_working_hours = models.CharField(max_length=100, blank=True, null=True)
     status = models.CharField(max_length=100, blank=True, null=True)
+    date_in = models.DateField(auto_now=False, auto_now_add=True, blank=True, null=True)
     date_created = models.DateTimeField(auto_now=False, auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
+
+    def total_hours(self):
+        # delta = self.time_out - self.time_in
+        # total_seconds = delta.total_seconds()
+        # total_hours = total_seconds / 3600
+
+        time_in = self.time_in
+        time_out = self.time_out
+        time_diff = time_out - time_in
+        seconds_in_day = 24 * 60 * 60
+        diff = divmod(time_diff.days * seconds_in_day + time_diff.seconds, 60)
+
+        time_list = []
+        for td in diff:
+            time_list.append(td)
+        h = 0
+        m = time_list[0]
+        s = time_list[1]
+        
+        if time_list[0] > 60:
+            h += int(time_list[0] / 60)
+            minus_mins = h * 60
+            m -= minus_mins
+        
+        if h == 0:
+            total_hours = "{}m {}s".format(m,s)
+        
+        if h == 0 and m == 0:
+            total_hours = "{}s".format(s)
+        
+        if h != 0 and m != 0:
+            total_hours = "{}h {}m {}s".format(h,m,s)
+
+            
+        return total_hours
 
     def __str__(self):
         return self.employee.name
