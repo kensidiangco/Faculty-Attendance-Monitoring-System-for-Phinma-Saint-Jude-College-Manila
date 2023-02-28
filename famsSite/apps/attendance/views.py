@@ -59,7 +59,7 @@ def Admin_dashboard(request):
 
 @login_required(login_url=reverse_lazy("Login_page"))
 def HomePage(request):
-    return render(request, './home.html')
+    return redirect('QRPage')
 
 def QRPage(request):
     if request.method == 'POST':
