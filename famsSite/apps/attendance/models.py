@@ -1,3 +1,5 @@
+import uuid
+from datetime import datetime, timedelta
 from django.db import models
 
 class Employee_Status(models.Model):
@@ -71,6 +73,7 @@ class Schedule(models.Model):
         return self.subject.subject_name
 
 class Employee_DTR(models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="employee")
     weekday = models.CharField(max_length=20, blank=True, null=True)
     time_in = models.DateTimeField(auto_now=False, auto_now_add=True)
@@ -82,10 +85,6 @@ class Employee_DTR(models.Model):
     date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     def total_hours(self):
-        # delta = self.time_out - self.time_in
-        # total_seconds = delta.total_seconds()
-        # total_hours = total_seconds / 3600
-
         time_in = self.time_in
         time_out = self.time_out
         time_diff = time_out - time_in
@@ -112,9 +111,16 @@ class Employee_DTR(models.Model):
         
         if h != 0 and m != 0:
             total_hours = "{}h {}m {}s".format(h,m,s)
-
             
         return total_hours
 
     def __str__(self):
-        return self.employee.name
+        return f"{self.employee.name} ({self.date_in})"
+
+    @classmethod
+    def is_duplicate(cls, uuid):
+        recent_scans = cls.objects.filter(
+            uuid=uuid,
+            date_created__gte=datetime.now() - timedelta(minutes=1)
+        )
+        return len(recent_scans) > 0

@@ -21,7 +21,8 @@ from PIL import Image
 from pyzbar.pyzbar import decode
 from utils.camera_streaming_widget import CameraStreamingWidget
 
-date_today = datetime.now().strftime('%B %d, %Y %I:%M %p')
+timezone = pytz.timezone('Asia/Manila')
+date_today = datetime.now(timezone).strftime('%B %d, %Y %I:%M %p')
 
 def Login_page(request):
     if request.method == 'POST':
@@ -65,56 +66,60 @@ def QRPage(request):
     if request.method == 'POST':
         qr_code_content = request.POST.get('qr_code_content')
         emp = Employee.objects.get(employee_ID=str(qr_code_content))
-
-        if emp.status == 'out':
-            emp_dtr = Employee_DTR.objects.create(
-                employee=emp,
-                status='ongoing',
-                weekday=datetime.now().strftime('%A')
-            )
-            emp.status = 'in'
-            emp_dtr.save()
-            emp.save()
-
+        uuid = request.GET.get('uuid')
+        if Employee_DTR.is_duplicate(uuid):
+            return render(request, 'duplicate_scan.html')
         else:
-            emp_dtr = Employee_DTR.objects.all()
-            dtr = emp_dtr.get(employee = emp.id, status = "ongoing")
+            if emp.status == 'out':
+                timezone = pytz.timezone('Asia/Manila')
+                emp_dtr = Employee_DTR.objects.create(
+                    employee=emp,
+                    status='ongoing',
+                    weekday=datetime.now(timezone).strftime('%A')
+                )
+                emp.status = 'in'
+                emp_dtr.save()
+                emp.save()
 
-            dtr.status = 'done'
-            timezone = pytz.timezone('Asia/Manila')
-            dtr.time_out = datetime.now(timezone)
-            emp.status = 'out'
+            else:
+                emp_dtr = Employee_DTR.objects.all()
+                dtr = emp_dtr.get(employee = emp.id, status = "ongoing")
 
-            time_in = dtr.time_in
-            time_out = dtr.time_out
-            time_diff = time_out - time_in
-            seconds_in_day = 24 * 60 * 60
-            diff = divmod(time_diff.days * seconds_in_day + time_diff.seconds, 60)
+                dtr.status = 'done'
+                timezone = pytz.timezone('Asia/Manila')
+                dtr.time_out = datetime.now(timezone)
+                emp.status = 'out'
 
-            time_list = []
-            for td in diff:
-                time_list.append(td)
-            h = 0
-            m = time_list[0]
-            s = time_list[1]
-            
-            if time_list[0] > 60:
-                h += int(time_list[0] / 60)
-                minus_mins = h * 60
-                m -= minus_mins
-            
-            if h == 0:
-                total_hours = "{}m {}s".format(m,s)
-            
-            if h == 0 and m == 0:
-                total_hours = "{}s".format(s)
-            
-            if h != 0 and m != 0:
-                total_hours = "{}h {}m {}s".format(h,m,s)
+                time_in = dtr.time_in
+                time_out = dtr.time_out
+                time_diff = time_out - time_in
+                seconds_in_day = 24 * 60 * 60
+                diff = divmod(time_diff.days * seconds_in_day + time_diff.seconds, 60)
 
-            dtr.total_working_hours = total_hours
-            dtr.save()
-            emp.save()
+                time_list = []
+                for td in diff:
+                    time_list.append(td)
+                h = 0
+                m = time_list[0]
+                s = time_list[1]
+                
+                if time_list[0] > 60:
+                    h += int(time_list[0] / 60)
+                    minus_mins = h * 60
+                    m -= minus_mins
+                
+                if h == 0:
+                    total_hours = "{}m {}s".format(m,s)
+                
+                if h == 0 and m == 0:
+                    total_hours = "{}s".format(s)
+                
+                if h != 0 and m != 0:
+                    total_hours = "{}h {}m {}s".format(h,m,s)
+
+                dtr.total_working_hours = total_hours
+                dtr.save()
+                emp.save()
         
     return render(request, './attendance/qr.html')
 
@@ -143,7 +148,7 @@ def DTR_Export(request):
             wb = xlwt.Workbook(encoding='utf-8')
             ws = wb.add_sheet('Employee\'s DTR')
             ws.col(0).width  = 4000
-            ws.col(1).width  = 4000
+            ws.col(1).width  = 8000
             ws.col(2).width  = 4000
             ws.col(3).width  = 8000
             ws.col(4).width  = 8000
@@ -269,7 +274,7 @@ def Add_Schedule_Page(request):
 
 @login_required(login_url=reverse_lazy("Login_page"))
 def Employee_list(request):
-    emps = Employee.objects.all()
+    emps = Employee.objects.all().order_by('-date_created')
     paginator = Paginator(emps, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
