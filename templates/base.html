@@ -4,10 +4,11 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>{% block title %}{% endblock title %}</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}{% endblock title %}</title>
         {% tailwind_css %}
+        <link rel="stylesheet" href="{% static 'base.css' %}">
         <style>
             .my-transition{
                 -webkit-transition: all 0.5s ease-in-out;
@@ -40,6 +41,7 @@
         </style>
     </head>
     <body class="{% if user.is_authenticated %} grid grid-cols-6 {% endif %} gap-4 m-4 bg-gradient-to-r from-cyan-50 to-green-100">
+        {% include "./components/loading.html" %}
         {% if user.is_authenticated %}
             {% with request.resolver_match.url_name as url_name %}
                 <div class="flex flex-col gap-2">
@@ -81,6 +83,11 @@
         {% if user.is_authenticated %}
         {% include './components/right_panel.html' %}
         {% endif %}
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                document.querySelector(".loader-bg").style.display = "none";
+            });
+        </script>
         <script src="" async defer></script>
     </body>
 </html>
