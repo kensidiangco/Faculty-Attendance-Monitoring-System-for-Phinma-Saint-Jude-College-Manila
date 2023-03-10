@@ -77,13 +77,13 @@
                 </div>
             {% endwith %}
         {% endif %}
-        <div class="col-span-4">
+        <div class="col-span-5">
             {% block content %}
             {% endblock content %}
         </div>
-        {% if user.is_authenticated %}
+        {% comment %} {% if user.is_authenticated %}
         {% include './components/right_panel.html' %}
-        {% endif %}
+        {% endif %} {% endcomment %}
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 document.querySelector(".loader-bg").style.display = "none";
