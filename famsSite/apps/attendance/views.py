@@ -12,13 +12,10 @@ from .forms import EmployeeForm, DepartmentForm, SubjectForm, ScheduleForm
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse, reverse_lazy
 from django.core.paginator import Paginator
-# export import 
 import xlwt 
 
 # another scanner
 from django.http import JsonResponse, StreamingHttpResponse, HttpResponse, HttpResponseRedirect
-from PIL import Image
-from pyzbar.pyzbar import decode
 from utils.camera_streaming_widget import CameraStreamingWidget
 
 timezone = pytz.timezone('Asia/Manila')

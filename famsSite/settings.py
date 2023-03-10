@@ -29,8 +29,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'famsSite.apps.attendance',
-    "corsheaders",
+    'rest_framework',
 
+    "corsheaders",
     'tailwind',
     'theme',
     'django_browser_reload',

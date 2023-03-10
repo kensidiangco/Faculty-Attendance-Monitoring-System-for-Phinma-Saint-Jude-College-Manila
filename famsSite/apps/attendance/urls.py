@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .serializerViews import Employee_DTR_SerializerList, Employee_DTR_SerializerDetail
 
 urlpatterns = [
     path('', views.HomePage, name="HomePage"),
@@ -15,9 +16,12 @@ urlpatterns = [
     path('employees', views.Employee_list, name="Employee_list"),
     path('departments', views.Department_list, name="Department_list"),
     path('generate', views.Generate_QR_page, name="Generate_QR_page"),
-
     path('dtr/export', views.DTR_Export, name="DTR_Export"),
     
+    # API VIEWS
+    path('api/records/', Employee_DTR_SerializerList.as_view()),
+    path('api/records/<int:pk>/', Employee_DTR_SerializerDetail.as_view()),
+
     # path('', views.detect, name='detect_barcodes'),
     # path('camera_feed', views.camera_feed, name='camera_feed'),
 ]
