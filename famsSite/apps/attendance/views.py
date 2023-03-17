@@ -1,27 +1,26 @@
-import os
-from datetime import datetime, date, time
 import pytz
-import time
 import qrcode
-
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+import xlwt 
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.urls import reverse, reverse_lazy
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
 from .models import Employee, Employee_DTR, Department, Schedule
 from .forms import EmployeeForm, DepartmentForm, SubjectForm, ScheduleForm
-from django.contrib.auth import authenticate, login, logout
-from django.urls import reverse, reverse_lazy
 from django.core.paginator import Paginator
-import xlwt 
-
-# another scanner
-from django.http import JsonResponse, StreamingHttpResponse, HttpResponse, HttpResponseRedirect
 from utils.camera_streaming_widget import CameraStreamingWidget
+from datetime import datetime, date
+from django.shortcuts import get_object_or_404
 
 timezone = pytz.timezone('Asia/Manila')
 date_today = datetime.now(timezone).strftime('%B %d, %Y %I:%M %p')
 
 def Login_page(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('DTR_Export'))
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -34,7 +33,7 @@ def Login_page(request):
                 return HttpResponse("Your account was inactive.")
         else:
             messages.error(request, 'Check your password!')
-            
+        
     return render(request, './admin/login_page.html')
 
 @login_required(login_url=reverse_lazy("Login_page"))
@@ -285,6 +284,71 @@ def Employee_list(request):
     return render(request, './admin/employees.html', ctx)
 
 @login_required(login_url=reverse_lazy("Login_page"))
+def Employee_page(request, pk):
+    emp = get_object_or_404(Employee, pk=pk)
+    scheds = emp.schedule_set.all().order_by('-date_created')
+    dtrs = emp.employee_dtr_set.all().order_by('-date_created')
+    
+    if request.method == 'POST':
+        if 'export_dtr' in request.POST:
+            DateFrom = request.POST.get('dateFrom')
+            DateTo = request.POST.get('dateTo')
+            
+            queryset = dtrs.filter(date_in__range=[DateFrom, DateTo]).order_by('-date_in')
+
+            response = HttpResponse(content_type='application/ms-excel')
+            response['Content-Disposition'] = 'attachment; filename="{}\'s DTR.xls"'.format(emp.name)
+
+            wb = xlwt.Workbook(encoding='utf-8')
+            ws = wb.add_sheet(emp.name + '\'s DTR')
+            ws.col(0).width  = 4000
+            ws.col(1).width  = 8000
+            ws.col(2).width  = 4000
+            ws.col(3).width  = 8000
+            ws.col(4).width  = 8000
+            ws.col(5).width  = 4000
+
+            # Sheet header, first row
+            row_num = 0
+
+            font_style = xlwt.XFStyle()
+            font_style.font.bold = True
+
+            columns = ['employee id', 'name', 'weekday', 'in', 'out', 'total hours']
+
+            for col_num in range(len(columns)):
+                ws.write(row_num, col_num, columns[col_num], font_style)
+
+            # Sheet body, remaining rows
+            font_style = xlwt.XFStyle()
+
+            rows = queryset.values_list('employee__employee_ID', 'employee__name', 'weekday', 'time_in', 'time_out', 'total_working_hours')
+            for row in rows:
+                row_num += 1
+                for col_num in range(len(row)):
+                    if isinstance(row[col_num], date):
+                        dateCol = row[col_num].strftime('%B %d, %Y %I:%M %p')
+                        ws.write(row_num, col_num, dateCol, font_style)
+                    else:
+                        ws.write(row_num, col_num, row[col_num], font_style)
+
+            wb.save(response)
+            return response    
+
+    paginator = Paginator(scheds, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    scheds_count = len(scheds)
+
+    ctx = {
+        'emp': emp,
+        'scheds': scheds,
+        'page_obj': page_obj,
+        'scheds_count': scheds_count
+    }
+    return render(request, 'employee/employee_details.html', ctx)
+
+@login_required(login_url=reverse_lazy("Login_page"))
 def Department_list(request):
     depts = Department.objects.all()
     paginator = Paginator(depts, 5)
@@ -318,42 +382,6 @@ def Generate_QR_page(request):
         # Render the form in your template
         return render(request, './attendance/generate_qr.html')
 
-
-# pyzbar
-# def is_ajax(request):
-#     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
-
-# # Camera feed
-# def camera_feed(request):
-#     stream = CameraStreamingWidget()
-#     frames = stream.get_frames()
-
-#     # if ajax request is sent
-#     if is_ajax(request):
-#         print('Ajax request received')
-#         time_stamp = str(datetime.now().strftime("%d-%m-%y"))
-#         image = os.path.join(os.getcwd(), "media",
-#                              "images", f"img_{time_stamp}.png")
-#         if os.path.exists(image):
-#             # open image if exists
-#             im = Image.open(image)
-#             # decode barcode
-#             if decode(im):
-#                 for barcode in decode(im):
-#                     barcode_data = (barcode.data).decode('utf-8')
-#                     file_saved_at = time.ctime(os.path.getmtime(image))
-#                     # return decoded barcode as json response
-#                     return JsonResponse(data={'barcode_data': barcode_data, 'file_saved_at': file_saved_at})
-#             else:
-#                 return JsonResponse(data={'barcode_data': None})
-#         else:
-#             return JsonResponse(data={'barcode_data': None})
-#     # else stream the frames from camera feed
-#     else:
-#         return StreamingHttpResponse(frames, content_type='multipart/x-mixed-replace; boundary=frame')
-
-
-# def detect(request):
     stream = CameraStreamingWidget()
     success, frame = stream.camera.read()
     if success:
@@ -361,3 +389,5 @@ def Generate_QR_page(request):
     else:
         status = False
     return render(request, 'detect_barcodes/detect.html', context={'cam_status': status})
+
+    

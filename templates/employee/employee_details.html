@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock title %}
+
+{% block content %}
+    <div class="flex flex-row">
+        {{emp.name}}
+        {{emp.department.department_name}}
+        
+    </div>
+    <div class="p-4">
+        <label class="text-gray-600">Export {{emp.name}} Attendance Records</label>
+        <form method="POST" class="pb-4 pt-2">
+            {% csrf_token %}
+            <div class="flex justify-center items-center gap-2">
+                <label for="date-from">Date from</label>
+                <input 
+                    type="date" 
+                    id="dateFrom" 
+                    name="dateFrom" 
+                    class="rounded-md" 
+                    onkeyup="myFunction()"
+                    required 
+                />
+                <label for="date-to">Date to</label>
+                <input 
+                        type="date" 
+                        id="dateTo" 
+                        name="dateTo" 
+                        class="rounded-md" 
+                        onkeyup="myFunction()"
+                        required 
+                    />
+                <button type="submit" name='export_dtr' class="bg-green-500 hover:bg-green-600 hover:text-white shadow-xl py-2 px-4 rounded-md text-white font-bold transition-delay-1">Export Excel</button>
+            </div>
+        </form>
+
+        <div class='flex justify-center pt-4'>
+            <div class="bg-white rounded-md shadow-xl">
+                <table class="border-separate rounded-md shadow-xl">
+                    <tr class="border boreder-2 bg-green-500 rounded-md text-white">
+                        <th class="p-2 rounded-md">SUBJECT</th>
+                        <th class="p-2 rounded-md">WEEKDAY</th>
+                        <th class="p-2 rounded-md">IN&OUT</th>
+                        <th class="p-2 rounded-md">INFO</th>
+                    </tr>
+                    {% if scheds_count < 1 %}
+                        <tr>
+                            <td colspan="10" class="p-4 text-gray-600 text-sm">No data to show.</td>
+                        </tr>
+                    {% endif %}
+                    {% for sheds in page_obj %}
+                    <tr class="border boreder-2 hover:bg-gray-200 active:bg-gray-200 transition transition-delay-1 cursor-pointer">
+                        <td class="p-2">{{sheds.subject}}</td>
+                        <td class="p-2">{{sheds.weekday}}</td>
+                        <td class="p-2">{{sheds.time_in}} - {{sheds.time_out}}</td>
+                        <td class="p-2">
+                            <a href="" class="bg-green-600 py-2 px-4 rounded-md text-white hover:bg-green-500 transition transition-delay-1 text-center object-center">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                <div class="flex gap-2 items-center mx-2">
+                    <p class="px-4 py-2 float-left text-md text-green-600">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</p>
+                    <div class="flex gap-2 justify-end">
+        
+                        {% if page_obj.has_previous %}
+                            <a href="?page=1" class="bg-gray-100 px-2 py-1 rounded-md hover:bg-gray-200 transition transition-delay-1 text-sm">&laquo; first</a>
+                            <a href="?page={{ page_obj.previous_page_number }}" class="bg-gray-100 px-2 py-1 rounded-md hover:bg-gray-200 transition transition-delay-1 text-sm">Prev</a>
+                        {% endif %}
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}" class="bg-gray-100 px-2 py-1 rounded-md hover:bg-gray-200 transition transition-delay-1 text-sm">Next</a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}" class="bg-gray-100 px-2 py-1 rounded-md hover:bg-gray-200 transition transition-delay-1 text-sm">Last &raquo;</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

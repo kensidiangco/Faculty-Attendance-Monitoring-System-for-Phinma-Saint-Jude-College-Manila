@@ -74,7 +74,7 @@ class Schedule(models.Model):
 
 class Employee_DTR(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="employee")
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     weekday = models.CharField(max_length=20, blank=True, null=True)
     time_in = models.DateTimeField(auto_now=False, auto_now_add=True)
     time_out = models.DateTimeField(null=True)

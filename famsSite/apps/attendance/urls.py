@@ -14,6 +14,7 @@ urlpatterns = [
     path('create/schedule', views.Add_Schedule_Page, name="Add_Schedule_Page"),
     path('create/subject', views.Add_Subject_Page, name="Add_Subject_Page"),
     path('employees', views.Employee_list, name="Employee_list"),
+    path('emplopyee/<int:pk>', views.Employee_page, name="Employee_page"),
     path('departments', views.Department_list, name="Department_list"),
     path('generate', views.Generate_QR_page, name="Generate_QR_page"),
     path('dtr/export', views.DTR_Export, name="DTR_Export"),
