@@ -104,7 +104,7 @@ class ScheduleForm(forms.ModelForm):
             }),
             'time_in': forms.TimeInput(attrs={
                 'class': 'rounded-md',
-                'required': True
+                'required': True,
             }),
             'time_out': forms.TimeInput(attrs={
                 'class': 'rounded-md',

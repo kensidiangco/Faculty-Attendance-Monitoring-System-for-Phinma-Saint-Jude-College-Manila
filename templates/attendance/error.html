@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}FAMS | ERROR{% endblock title %}
+
+{% block content %}
+    <div class="flex flex-col justify-center items-center h-screen">
+        <div class="flex flex-col gap-4 items-center">
+            <div id="countdown"></div>
+            <p class="text-6xl text-red-600 text-center font-bold">X</p>
+            <p class="text-6xl text-red-600 font-bold">Error Attendance!</p>
+            <p class="text-2xl font-bold">QR Attendance is not valid.</p>
+            {% comment %} <a href={% url 'QRPage' %} class="text-xl bg-blue-500 hover:bg-blue-400 transition transition-delay-1 text-white p-2 rounded-md">Click here to manualy redirect to qr scan</a> {% endcomment %}
+        </div>
+    </div>
+
+    <script>
+        var countDownDate = new Date().getTime() + 5000; // Set the countdown date to 5 seconds from now
+    
+        // Update the countdown every 1 second
+        var x = setInterval(function() {
+    
+            // Get the current date and time
+            var now = new Date().getTime();
+    
+            // Calculate the distance between now and the countdown date
+            var distance = countDownDate - now;
+    
+            // Calculate the seconds remaining
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+            // Display the countdown in the element with id="countdown"
+            document.getElementById("countdown").innerHTML = "Redirecting to scanner in " + seconds + " seconds...";
+    
+            // If the countdown is over, redirect the user
+            if (distance < 0) {
+                clearInterval(x);
+                window.location.href = "/qr"; // Replace with the actual URL of the page to redirect to
+            }
+        }, 1000);
+    </script>
+{% endblock content %}

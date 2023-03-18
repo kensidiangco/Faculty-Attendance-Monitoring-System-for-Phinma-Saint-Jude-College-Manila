@@ -59,63 +59,68 @@ def HomePage(request):
     return redirect('QRPage')
 
 def QRPage(request):
-    if request.method == 'POST':
-        qr_code_content = request.POST.get('qr_code_content')
-        emp = Employee.objects.get(employee_ID=str(qr_code_content))
-        uuid = request.GET.get('uuid')
-        if Employee_DTR.is_duplicate(uuid):
-            return render(request, 'duplicate_scan.html')
-        else:
-            if emp.status == 'out':
-                timezone = pytz.timezone('Asia/Manila')
-                emp_dtr = Employee_DTR.objects.create(
-                    employee=emp,
-                    status='ongoing',
-                    weekday=datetime.now(timezone).strftime('%A')
-                )
-                emp.status = 'in'
-                emp_dtr.save()
-                emp.save()
 
+    try:
+        if request.method == 'POST':
+            qr_code_content = request.POST.get('qr_code_content')
+            emp = Employee.objects.get(employee_ID=str(qr_code_content))
+            uuid = request.GET.get('uuid')
+
+            if Employee_DTR.is_duplicate(uuid):
+                return render(request, 'duplicate_scan.html')
             else:
-                emp_dtr = Employee_DTR.objects.all()
-                dtr = emp_dtr.get(employee = emp.id, status = "ongoing")
+                if emp.status == 'out':
+                    timezone = pytz.timezone('Asia/Manila')
+                    emp_dtr = Employee_DTR.objects.create(
+                        employee=emp,
+                        status='ongoing',
+                        weekday=datetime.now(timezone).strftime('%A')
+                    )
+                    emp.status = 'in'
+                    emp_dtr.save()
+                    emp.save()
 
-                dtr.status = 'done'
-                timezone = pytz.timezone('Asia/Manila')
-                dtr.time_out = datetime.now(timezone)
-                emp.status = 'out'
+                else:
+                    emp_dtr = Employee_DTR.objects.all()
+                    dtr = emp_dtr.get(employee = emp.id, status = "ongoing")
 
-                time_in = dtr.time_in
-                time_out = dtr.time_out
-                time_diff = time_out - time_in
-                seconds_in_day = 24 * 60 * 60
-                diff = divmod(time_diff.days * seconds_in_day + time_diff.seconds, 60)
+                    dtr.status = 'done'
+                    timezone = pytz.timezone('Asia/Manila')
+                    dtr.time_out = datetime.now(timezone)
+                    emp.status = 'out'
 
-                time_list = []
-                for td in diff:
-                    time_list.append(td)
-                h = 0
-                m = time_list[0]
-                s = time_list[1]
-                
-                if time_list[0] > 60:
-                    h += int(time_list[0] / 60)
-                    minus_mins = h * 60
-                    m -= minus_mins
-                
-                if h == 0:
-                    total_hours = "{}m {}s".format(m,s)
-                
-                if h == 0 and m == 0:
-                    total_hours = "{}s".format(s)
-                
-                if h != 0 and m != 0:
-                    total_hours = "{}h {}m {}s".format(h,m,s)
+                    time_in = dtr.time_in
+                    time_out = dtr.time_out
+                    time_diff = time_out - time_in
+                    seconds_in_day = 24 * 60 * 60
+                    diff = divmod(time_diff.days * seconds_in_day + time_diff.seconds, 60)
 
-                dtr.total_working_hours = total_hours
-                dtr.save()
-                emp.save()
+                    time_list = []
+                    for td in diff:
+                        time_list.append(td)
+                    h = 0
+                    m = time_list[0]
+                    s = time_list[1]
+                    
+                    if time_list[0] > 60:
+                        h += int(time_list[0] / 60)
+                        minus_mins = h * 60
+                        m -= minus_mins
+                    
+                    if h == 0:
+                        total_hours = "{}m {}s".format(m,s)
+                    
+                    if h == 0 and m == 0:
+                        total_hours = "{}s".format(s)
+                    
+                    if h != 0 and m != 0:
+                        total_hours = "{}h {}m {}s".format(h,m,s)
+
+                    dtr.total_working_hours = total_hours
+                    dtr.save()
+                    emp.save()
+    except:
+        return render(request, './attendance/error.html')
         
     return render(request, './attendance/qr.html')
 

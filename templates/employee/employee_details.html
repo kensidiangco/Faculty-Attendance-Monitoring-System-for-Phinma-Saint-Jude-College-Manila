@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Home{% endblock title %}
+{% block title %}FAMS | {{emp.name}}{% endblock title %}
 
 {% block content %}
     <div class="flex flex-row">
@@ -8,7 +8,7 @@
         
     </div>
     <div class="p-4">
-        <label class="text-gray-600">Export {{emp.name}} Attendance Records</label>
+        <label class="text-gray-600 font-bold">Export Attendance Records</label>
         <form method="POST" class="pb-4 pt-2">
             {% csrf_token %}
             <div class="flex justify-center items-center gap-2">
@@ -34,6 +34,7 @@
             </div>
         </form>
 
+        <label class="text-gray-600 font-bold">Schedules</label>
         <div class='flex justify-center pt-4'>
             <div class="bg-white rounded-md shadow-xl">
                 <table class="border-separate rounded-md shadow-xl">
