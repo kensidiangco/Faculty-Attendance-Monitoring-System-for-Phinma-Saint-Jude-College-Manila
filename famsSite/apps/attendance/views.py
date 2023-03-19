@@ -11,7 +11,7 @@ from .models import Employee, Employee_DTR, Department, Schedule
 from .forms import EmployeeForm, DepartmentForm, SubjectForm, ScheduleForm
 from django.core.paginator import Paginator
 from utils.camera_streaming_widget import CameraStreamingWidget
-from datetime import datetime, date
+from datetime import datetime, date, timedelta, time
 from django.shortcuts import get_object_or_404
 
 timezone = pytz.timezone('Asia/Manila')
@@ -59,6 +59,7 @@ def HomePage(request):
     return redirect('QRPage')
 
 def QRPage(request):
+    timezone = pytz.timezone('Asia/Manila')
 
     try:
         if request.method == 'POST':
@@ -70,15 +71,71 @@ def QRPage(request):
                 return render(request, 'duplicate_scan.html')
             else:
                 if emp.status == 'out':
-                    timezone = pytz.timezone('Asia/Manila')
-                    emp_dtr = Employee_DTR.objects.create(
-                        employee=emp,
-                        status='ongoing',
-                        weekday=datetime.now(timezone).strftime('%A')
-                    )
-                    emp.status = 'in'
-                    emp_dtr.save()
-                    emp.save()
+                    try:
+
+                        hr_in = int(datetime.now().strftime('%H'))
+                        emp_in = time(hour=hr_in - 1, minute=0, second=0)
+                        emp_in_later = time(hour=hr_in + 1, minute=0, second=0)
+                        sched = emp.schedule_set.all().filter(time_in__range=(emp_in, emp_in_later)).order_by('time_in')
+
+                        if str(sched[0].weekday) != datetime.now().strftime('%A'):
+                            raise ValueError("You have no sched today!.")
+
+                        dt = datetime.now()
+                        t = sched[0].time_in
+                        dt_t = datetime.combine(dt.date(), t)
+                        time_diff = dt - dt_t
+
+                        seconds_in_day = 24 * 60 * 60
+                        diff = divmod(time_diff.days * seconds_in_day + time_diff.seconds, 60)
+
+                        time_list = []
+                        for td in diff:
+                            time_list.append(td)
+                        h = 0
+                        m = time_list[0]
+                        s = time_list[1]
+                        
+                        if time_list[0] > 60:
+                            h += int(time_list[0] / 60)
+                            minus_mins = h * 60
+                            m -= minus_mins
+                        
+                        if h == 0:
+                            total_hours = "{}m {}s".format(m,s)
+                        
+                        if h == 0 and m == 0:
+                            total_hours = "{}s".format(s)
+                        
+                        if h != 0 and m != 0:
+                            total_hours = "{}h {}m {}s".format(h,m,s)
+
+                        print(total_hours)
+
+                        if time_diff.total_seconds() > 0:
+                            emp_dtr = Employee_DTR.objects.create(
+                                employee=emp,
+                                status='ongoing',
+                                weekday=datetime.now(timezone).strftime('%A'),
+                                time_in=datetime.now(timezone),
+                                attendance_status = 'LATE'
+                            )
+                            
+                        if time_diff.total_seconds() < 0:
+                            emp_dtr = Employee_DTR.objects.create(
+                                employee=emp,
+                                status='ongoing',
+                                weekday=datetime.now(timezone).strftime('%A'),
+                                time_in=datetime.now(timezone),
+                                attendance_status = 'NOT LATE'
+                            )
+
+                        emp_dtr.save()
+                        emp.status = 'in'
+                        emp.save()
+
+                    except ValueError as error:
+                        print(error)
 
                 else:
                     emp_dtr = Employee_DTR.objects.all()
@@ -293,7 +350,7 @@ def Employee_page(request, pk):
     emp = get_object_or_404(Employee, pk=pk)
     scheds = emp.schedule_set.all().order_by('-date_created')
     dtrs = emp.employee_dtr_set.all().order_by('-date_created')
-    
+
     if request.method == 'POST':
         if 'export_dtr' in request.POST:
             DateFrom = request.POST.get('dateFrom')

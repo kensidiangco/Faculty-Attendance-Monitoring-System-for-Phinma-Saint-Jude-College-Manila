@@ -62,6 +62,7 @@
                         <th class="p-2 rounded-md">TIME IN</th>
                         <th class="p-2 rounded-md">TIME OUT</th>
                         <th class="p-2 rounded-md">TOTAL HOURS</th>
+                        <th class="p-2 rounded-md">STATUS</th>
                     </tr>
                     {% if records_count < 1 %}
                         <tr>
@@ -74,7 +75,8 @@
                         <td class="p-2">{{record.employee.name}}</td>
                         <td class="p-2">{{record.weekday}}</td>
                         <td class="p-2">{{record.time_in}}</td>
-                            {% if record.time_out == None %}
+                        {% if record.time_out == None %}
+                                <td>---</td>
                             {% else %}
                                 <td>{{record.time_out}}</td>
                             {% endif %}
@@ -83,6 +85,15 @@
                                 Ongoing
                             {% else %}
                                 {{record.total_hours}}
+                            {% endif %}
+                        </td>
+                        <td class="p-2">
+                            {% if record.attendance_status == None %}
+                                <p>Not implemented before.</p>
+                                {% elif record.attendance_status == "LATE" %}
+                                    <p class="bg-yellow-500 text-white text-sm font-bold p-2 rounded-md text-center">{{record.attendance_status}}</p>
+                                {% else %}
+                                    <p class="bg-green-500 text-white text-sm font-bold">{{record.attendance_status}}</p>
                             {% endif %}
                         </td>
                         {% comment %} <td class="p-2">
