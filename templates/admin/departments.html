@@ -11,10 +11,12 @@
         <div class="bg-white rounded-md shadow-xl">
             <table class="border-separate rounded-md shadow-xl">
                 <tr class="border boreder-2 bg-green-500 rounded-md text-white">
-                    <th class="p-2 rounded-md">DEPT NAME</th>
-                    <th class="p-2 rounded-md">ADDRESS</th>
-                    <th class="p-2 rounded-md">ROOM NO.</th>
-                    <th class="p-2 rounded-md">FLOOR</th>
+                    <th class="p-2 rounded-md">DEPARTMENT NAME</th>
+                    <th class="p-2 rounded-md">ADDRESS ROOM</th>
+                    <th class="p-2 rounded-md">ROOM NUMBER</th>
+                    <th class="p-2 rounded-md">FLOOR LEVEL</th>
+                    <th class="p-2 rounded-md">DETAIL VIEW</th>
+
                 </tr>
                 {% if depts_count < 1 %}
                     <tr>
@@ -27,6 +29,7 @@
                     <td class="p-2">{{dept.address}}</td>
                     <td class="p-2">{{dept.room_no}}</td>
                     <td class="p-2">{{dept.floor}}</td>
+                    <td class="p-2">VIEW</td>
                 </tr>
                 {% endfor %}
             </table>

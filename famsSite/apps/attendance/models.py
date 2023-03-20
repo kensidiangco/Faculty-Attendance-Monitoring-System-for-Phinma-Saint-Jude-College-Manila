@@ -66,6 +66,7 @@ class Schedule(models.Model):
     weekday = models.ForeignKey(Weekday, on_delete=models.CASCADE)
     time_in = models.TimeField(auto_now=False, auto_now_add=False)
     time_out = models.TimeField(auto_now=False, auto_now_add=False)
+    status = models.CharField(max_length=20, default="VACANT")
     date_created = models.DateTimeField(auto_now=False, auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
