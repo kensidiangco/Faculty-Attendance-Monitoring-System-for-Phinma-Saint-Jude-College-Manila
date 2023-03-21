@@ -9,6 +9,8 @@
         <title>{% block title %}{% endblock title %}</title>
         {% tailwind_css %}
         <link rel="stylesheet" href="{% static 'base.css' %}">
+        <link rel="icon" type="image/png" href="{% static 'images/sjc.ico ' %}">
+        
         <style>
             .my-transition{
                 -webkit-transition: all 0.5s ease-in-out;
@@ -43,21 +45,26 @@
     </head>
     <body class="{% if user.is_authenticated %} grid grid-cols-6 {% endif %} gap-4 m-4 bg-gradient-to-r from-cyan-50 to-green-100">
         {% include "./components/loading.html" %}
+
         {% if user.is_authenticated %}
             {% include "./components/left_panel.html" %}
         {% endif %}
+
         <div class="col-span-5">
             {% block content %}
             {% endblock content %}
         </div>
+
         {% comment %} {% if user.is_authenticated %}
         {% include './components/right_panel.html' %}
         {% endif %} {% endcomment %}
+
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 document.querySelector(".loader-bg").style.display = "none";
             });
         </script>
+
         <script>
             $(document).ready(function() {
                 $('#myForm').submit(function() {

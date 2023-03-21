@@ -3,11 +3,11 @@
 {% block title %}FAMS | {{emp.name}}{% endblock title %}
 
 {% block content %}
-    <div class="flex flex-col gap-20">
-        <label class="text-gray-600 font-bold text-xl">EMPLOYEE INFORMATION</label>
-        <div class="grid grid-cols-3 gap-4">
+    <div class="flex flex-col gap-8">
+        <label class="text-gray-600 font-bold text-xl pb-4">EMPLOYEE INFORMATION</label>
+        <div class="grid grid-cols-4">
             <div class="flex justify-center">
-                <button onClick="OpenModal()"><span class="notif-count"></span><img src="{% static 'images/avatar.png'%}" class="cursor-pointer transition transition-delay-1 w-48" /></button>
+                <img src="{% static 'images/avatar.png'%}" class="cursor-pointer transition transition-delay-1 w-48" />
             </div>
             <div class="flex flex-col gap-2">
                 <div class="flex flex-col">
@@ -37,12 +37,24 @@
                     <p class="text-green-500 font-bold">ACTIVE</p>
                 </div>
             </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-gray-600 font-bold">ATTENDANCE:</label>
+                <div class="flex flex-col">
+                    <label class="text-sm text-gray-600 font-bold">LATE COUNT:</label>
+                    <p class="text-yellow-500 font-bold">{{late_count}}</p>
+                </div>
+                <div class="flex flex-col">
+                    <label class="text-sm text-gray-600 font-bold">NOT LATE COUNT:</label>
+                    <p class="text-green-500 font-bold">{{not_late_count}}</p>
+                </div>
+            </div>
             
         </div>
-        <div class="flex flex-col gap-8">
-            <label class="text-gray-600 font-bold text-xl">ATTENDANCE RECORD EXPORT</label>
-            <form method="POST" class="pb-4 pt-2">
+        <label class="text-gray-600 font-bold text-xl">SCHEDULES</label>
+        <div class="flex flex-col">
+            <form method="POST" class="pb-4">
                 {% csrf_token %}
+                <label class="text-gray-600 font-bold text-sm ml-12">EXPORT ATTENDANCE RECORD</label>
                 <div class="flex justify-center items-center gap-2">
                     <label for="date-from">Date from</label>
                     <input 
@@ -66,8 +78,7 @@
                 </div>
             </form>
 
-            <label class="text-gray-600 font-bold text-xl">SCHEDULES</label>
-            <div class='flex justify-center pt-4'>
+            <div class='flex justify-center'>
                 <div class="bg-white rounded-md shadow-xl">
                     <table class="border-separate rounded-md shadow-xl">
                         <tr class="border boreder-2 bg-green-500 rounded-md text-white">
@@ -76,7 +87,7 @@
                             <th class="p-2 rounded-md">SEMESTER</th>
                             <th class="p-2 rounded-md">WEEKDAY</th>
                             <th class="p-2 rounded-md">IN & OUT</th>
-                            <th class="p-2 rounded-md">INFO</th>
+                            {% comment %} <th class="p-2 rounded-md">INFO</th> {% endcomment %}
                         </tr>
                         {% if scheds_count < 1 %}
                             <tr>
@@ -90,9 +101,9 @@
                             <td class="p-2">{{sheds.subject.semester}}</td>
                             <td class="p-2">{{sheds.weekday}}</td>
                             <td class="p-2">{{sheds.time_in}} - {{sheds.time_out}}</td>
-                            <td class="p-2">
+                            {% comment %} <td class="p-2">
                                 <a href="" class="bg-green-600 py-2 px-4 rounded-md text-white hover:bg-green-500 transition transition-delay-1 text-center object-center">View</a>
-                            </td>
+                            </td> {% endcomment %}
                         </tr>
                         {% endfor %}
                     </table>

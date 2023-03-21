@@ -1,6 +1,5 @@
 import pytz
 import qrcode
-import xlwt 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
@@ -11,8 +10,9 @@ from .models import Employee, Employee_DTR, Department, Schedule
 from .forms import EmployeeForm, DepartmentForm, SubjectForm, ScheduleForm
 from django.core.paginator import Paginator
 from utils.camera_streaming_widget import CameraStreamingWidget
-from datetime import datetime, date, timedelta, time
+from datetime import datetime, time
 from django.shortcuts import get_object_or_404
+from .utils import export_attendance_excel
 
 timezone = pytz.timezone('Asia/Manila')
 date_today = datetime.now(timezone).strftime('%B %d, %Y %I:%M %p')
@@ -68,7 +68,6 @@ def QRPage(request):
         except:
             return render(request, './attendance/error.html')
 
-        
         uuid = request.GET.get('uuid')
 
         if Employee_DTR.is_duplicate(uuid):
@@ -140,8 +139,8 @@ def QRPage(request):
                     emp_dtr.save()
                     emp.status = 'in'
                     schd = Schedule.objects.get(id = sched[len(sched)-1].id)
-                    schd = 'ONGOING'
-                    schd = 'SAVE'
+                    schd.status = 'ONGOING'
+                    schd.save()
                     emp.save()
                 
                 else:
@@ -192,9 +191,7 @@ def QRPage(request):
             except ValueError as error:
                 print(error)
                 return render(request, './attendance/error.html')
-
                 
-        
     return render(request, './attendance/qr.html')
 
 @login_required(login_url=reverse_lazy("Login_page"))
@@ -213,47 +210,10 @@ def DTR_Export(request):
         if 'export_dtr' in request.POST:
             DateFrom = request.POST.get('dateFrom')
             DateTo = request.POST.get('dateTo')
-            
             queryset = Employee_DTR.objects.filter(date_in__range=[DateFrom, DateTo]).order_by('-date_in')
 
-            response = HttpResponse(content_type='application/ms-excel')
-            response['Content-Disposition'] = 'attachment; filename="Employee\'s DTR.xls"'
+            return export_attendance_excel('EMPLOYEE', queryset)    
 
-            wb = xlwt.Workbook(encoding='utf-8')
-            ws = wb.add_sheet('Employee\'s DTR')
-            ws.col(0).width  = 4000
-            ws.col(1).width  = 8000
-            ws.col(2).width  = 4000
-            ws.col(3).width  = 8000
-            ws.col(4).width  = 8000
-            ws.col(5).width  = 4000
-
-            # Sheet header, first row
-            row_num = 0
-
-            font_style = xlwt.XFStyle()
-            font_style.font.bold = True
-
-            columns = ['employee id', 'name', 'weekday', 'in', 'out', 'total hours']
-
-            for col_num in range(len(columns)):
-                ws.write(row_num, col_num, columns[col_num], font_style)
-
-            # Sheet body, remaining rows
-            font_style = xlwt.XFStyle()
-
-            rows = queryset.values_list('employee__employee_ID', 'employee__name', 'weekday', 'time_in', 'time_out', 'total_working_hours')
-            for row in rows:
-                row_num += 1
-                for col_num in range(len(row)):
-                    if isinstance(row[col_num], date):
-                        dateCol = row[col_num].strftime('%B %d, %Y %I:%M %p')
-                        ws.write(row_num, col_num, dateCol, font_style)
-                    else:
-                        ws.write(row_num, col_num, row[col_num], font_style)
-
-            wb.save(response)
-            return response
     
     ctx ={
         'page_obj': page_obj,
@@ -364,65 +324,31 @@ def Employee_list(request):
 @login_required(login_url=reverse_lazy("Login_page"))
 def Employee_page(request, pk):
     emp = get_object_or_404(Employee, pk=pk)
-    scheds = emp.schedule_set.all().order_by('-date_created')
+    scheds = emp.schedule_set.all().order_by('time_in')
     dtrs = emp.employee_dtr_set.all().order_by('-date_created')
 
     if request.method == 'POST':
         if 'export_dtr' in request.POST:
             DateFrom = request.POST.get('dateFrom')
             DateTo = request.POST.get('dateTo')
-            
             queryset = dtrs.filter(date_in__range=[DateFrom, DateTo]).order_by('-date_in')
-
-            response = HttpResponse(content_type='application/ms-excel')
-            response['Content-Disposition'] = 'attachment; filename="{}\'s DTR.xls"'.format(emp.name)
-
-            wb = xlwt.Workbook(encoding='utf-8')
-            ws = wb.add_sheet(emp.name + '\'s DTR')
-            ws.col(0).width  = 4000
-            ws.col(1).width  = 8000
-            ws.col(2).width  = 4000
-            ws.col(3).width  = 8000
-            ws.col(4).width  = 8000
-            ws.col(5).width  = 4000
-
-            # Sheet header, first row
-            row_num = 0
-
-            font_style = xlwt.XFStyle()
-            font_style.font.bold = True
-
-            columns = ['employee id', 'name', 'weekday', 'in', 'out', 'total hours']
-
-            for col_num in range(len(columns)):
-                ws.write(row_num, col_num, columns[col_num], font_style)
-
-            # Sheet body, remaining rows
-            font_style = xlwt.XFStyle()
-
-            rows = queryset.values_list('employee__employee_ID', 'employee__name', 'weekday', 'time_in', 'time_out', 'total_working_hours')
-            for row in rows:
-                row_num += 1
-                for col_num in range(len(row)):
-                    if isinstance(row[col_num], date):
-                        dateCol = row[col_num].strftime('%B %d, %Y %I:%M %p')
-                        ws.write(row_num, col_num, dateCol, font_style)
-                    else:
-                        ws.write(row_num, col_num, row[col_num], font_style)
-
-            wb.save(response)
-            return response    
+            return export_attendance_excel(emp.name, queryset)    
 
     paginator = Paginator(scheds, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     scheds_count = len(scheds)
 
+    late_count = dtrs.filter(attendance_status="LATE").count()
+    not_late_count = dtrs.filter(attendance_status="NOT LATE").count()
+
     ctx = {
         'emp': emp,
         'scheds': scheds,
         'page_obj': page_obj,
-        'scheds_count': scheds_count
+        'scheds_count': scheds_count,
+        'late_count': late_count,
+        'not_late_count': not_late_count,
     }
     return render(request, 'employee/employee_details.html', ctx)
 

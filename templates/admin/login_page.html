@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}FAMS | Login{% endblock title %}
 
 {% block content %}
 <div class="">
     <div class="flex flex-col gap-4 justify-center items-center">
+        <img src="{% static 'images/sjc_logo.png' %}" class="w-48" />
         <div class="bg-white p-4 rounded-xl shadow-xl">
             {% for message in messages %}
             {% if message.tags == 'error' %}
@@ -11,13 +13,16 @@
             {% else %}
                 <p class="">{{ message }}</p>
                 {% endif %}
-            {% endfor %}
-            <h1 class="text-xl font-bold p-2 pb-4">ADMIN LOGIN</h1>
+                {% endfor %}
+            <div class="flex flex-col justify-center items-center">
+                <p class="text-sm font-bold p-2 text-gray-700">FACULTY ATTENDANCE MONITORING SYSTEM</p>
+                <p class="text-xl font-bold p-2 pb-4">ADMIN LOGIN</p>
+            </div>
             <form id="myForm" method="POST" class="flex flex-col gap-4 justify-center items-center">
                 {% csrf_token %}
                 <input type="text" class="rounded-md" id="username" name="username" placeholder="Username" autocapitalize="none" autofocus required>
                 <input type="password" class="rounded-md" id="password" name="password" placeholder="password" autocapitalize="none" required>
-                <button id="submitButton" type="submit" class="rounded-md hover:bg-green-400 bg-green-500 p-2 text-white font-bold" >Login</button>
+                <button id="submitButton" type="submit" class="rounded-md hover:bg-green-400 bg-green-500 p-2 text-white font-bold w-86" >Login</button>
             </form>
             <div class="">
                 {% comment %} <a href="" class="text-sm cursor-pointer">Forgot password?</a>
