@@ -9,7 +9,6 @@ from django.contrib.auth import authenticate, login, logout
 from .models import Employee, Employee_DTR, Department, Schedule
 from .forms import EmployeeForm, DepartmentForm, SubjectForm, ScheduleForm
 from django.core.paginator import Paginator
-from utils.camera_streaming_widget import CameraStreamingWidget
 from datetime import datetime, time
 from django.shortcuts import get_object_or_404
 from .utils import export_attendance_excel

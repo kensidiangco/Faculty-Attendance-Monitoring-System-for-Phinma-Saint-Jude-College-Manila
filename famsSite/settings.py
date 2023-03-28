@@ -30,7 +30,6 @@ INSTALLED_APPS = [
 
     'famsSite.apps.attendance',
     'rest_framework',
-    'celery',
     
     "corsheaders",
     'tailwind',
