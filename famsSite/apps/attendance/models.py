@@ -9,6 +9,7 @@ class Employee_Status(models.Model):
 
     def __str__(self):
         return self.name
+    
 class Department(models.Model):
     department_name = models.CharField(max_length=100, blank=False, null=False, unique=True)
     address = models.CharField(max_length=100, blank=False, null=False)
