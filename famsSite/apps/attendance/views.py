@@ -384,13 +384,3 @@ def Generate_QR_page(request):
     else:
         # Render the form in your template
         return render(request, './attendance/generate_qr.html')
-
-    stream = CameraStreamingWidget()
-    success, frame = stream.camera.read()
-    if success:
-        status = True
-    else:
-        status = False
-    return render(request, 'detect_barcodes/detect.html', context={'cam_status': status})
-
-    
