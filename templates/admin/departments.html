@@ -2,7 +2,7 @@
 {% block title %}FAMS | Departments{% endblock title %}
 
 {% block content %}
-    <p class="font-bold text-xl my-4">Departments</p>
+    <p class="font-bold text-xl my-4 text-gray-600">DEPARTMENTS</p>
     <div class="flex">
         <p class="px-4 py-2">{{date_today}}</p>
     </div>
@@ -15,7 +15,7 @@
                     <th class="p-2 rounded-md">ADDRESS ROOM</th>
                     <th class="p-2 rounded-md">ROOM NUMBER</th>
                     <th class="p-2 rounded-md">FLOOR LEVEL</th>
-                    <th class="p-2 rounded-md">DETAIL VIEW</th>
+                    {% comment %} <th class="p-2 rounded-md">DETAIL VIEW</th> {% endcomment %}
 
                 </tr>
                 {% if depts_count < 1 %}
@@ -29,7 +29,7 @@
                     <td class="p-2">{{dept.address}}</td>
                     <td class="p-2">{{dept.room_no}}</td>
                     <td class="p-2">{{dept.floor}}</td>
-                    <td class="p-2">VIEW</td>
+                    {% comment %} <td class="p-2">VIEW</td> {% endcomment %}
                 </tr>
                 {% endfor %}
             </table>

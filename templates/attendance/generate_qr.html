@@ -2,7 +2,7 @@
 {% block title %}FAMS | Generate QR{% endblock title %}
 
 {% block content %}
-    <p class="font-bold text-xl my-4">Generate QR</p>
+    <p class="font-bold text-xl my-4 text-gray-600">QR CODE GENERATOR</p>
     <div class="flex">
         <p class="px-4 py-2">{{date_today}}</p>
     </div>
@@ -12,7 +12,7 @@
             <p class="text-xl font-bold">Generate QR Code</p>
             {% csrf_token %}
             <input type="text" placeholder="Employee ID" name="qr_url" class="rounded-md" required/>
-            <button type="submit" name="generate_qr" class="bg-green-500 text-white font-bold rounded-md hover:bg-green-400 p-2 transition transition-delay-1">Generate QR Code</button>
+            <button type="submit" name="generate_qr" class="bg-green-500 text-white font-bold rounded-md hover:bg-green-400 p-2 px-16 transition transition-delay-1">Generate QR Code</button>
         </form>
     </div>
     

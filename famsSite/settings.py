@@ -15,7 +15,7 @@ SECRET_KEY = 'get_random_secret_key()'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['sjcfams.local', '127.0.0.1', 'localhost', '192.168.1.19']
 CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
