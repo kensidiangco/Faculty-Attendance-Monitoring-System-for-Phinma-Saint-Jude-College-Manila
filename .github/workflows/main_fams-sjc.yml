@@ -60,4 +60,4 @@ jobs:
         with:
           app-name: 'fams-sjc'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C85C2DF9219A4FFEA0F252C25CF5F9DC }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_008ADB3682AB4706A3DCEDAA61D4EB2E }}
