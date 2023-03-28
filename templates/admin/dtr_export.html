@@ -26,8 +26,9 @@
         }
     </script>
     <p class="font-bold text-xl text-gray-600">ATTENDANCE RECORDS</p>
+    <p class="text-sm">{{date_today}}</p>
     <div class="p-4">
-        <label class="text-gray-600">Export Employee Records</label>
+        {% comment %} <label class="text-gray-600">Export Employee Records</label> {% endcomment %}
         <form method="POST" class="pb-4 pt-2">
             {% csrf_token %}
             <div class="flex justify-center items-center gap-2">
@@ -49,7 +50,7 @@
                         onkeyup="myFunction()"
                         required 
                     />
-                <button type="submit" name='export_dtr' class="bg-green-500 hover:bg-green-600 hover:text-white shadow-xl py-2 px-4 rounded-md text-white font-bold transition-delay-1">Export Excel</button>
+                <button type="submit" name='export_dtr' class="bg-green-500 hover:bg-green-600 hover:text-white shadow py-2 px-4 rounded-md text-white font-bold transition-delay-1">Export Attendance</button>
             </div>
         </form>
         <div class='flex justify-center pt-4'>

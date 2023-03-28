@@ -41,16 +41,16 @@
                 scroll-behavior: smooth;
             }
         </style>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="{% static './js/jquery-3.6.0.min.js' %}"></script>
     </head>
-    <body class="{% if user.is_authenticated %} grid grid-cols-6 {% endif %} gap-4 m-4 bg-gradient-to-r from-cyan-50 to-green-100">
+    <body class="{% if user.is_authenticated %} md:grid grid-cols-6 {% endif %} gap-4 bg-gradient-to-r from-cyan-50 to-green-100">
         {% include "./components/loading.html" %}
 
         {% if user.is_authenticated %}
             {% include "./components/left_panel.html" %}
         {% endif %}
 
-        <div class="col-span-5">
+        <div class="col-span-5 p-4">
             {% block content %}
             {% endblock content %}
         </div>

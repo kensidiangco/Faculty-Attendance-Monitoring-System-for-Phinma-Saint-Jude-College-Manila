@@ -200,7 +200,7 @@ def QRSuccessPage(request):
 @login_required(login_url=reverse_lazy("Login_page"))
 def DTR_Export(request):
     employee_records = Employee_DTR.objects.all().order_by('-date_created') 
-    paginator = Paginator(employee_records, 5)
+    paginator = Paginator(employee_records, 7)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     records_count = len(employee_records)
@@ -216,7 +216,8 @@ def DTR_Export(request):
     
     ctx ={
         'page_obj': page_obj,
-        'records_count': records_count
+        'records_count': records_count,
+        'date_today': date_today,
     }
     return render(request, './admin/dtr_export.html', ctx)
 
@@ -348,12 +349,13 @@ def Employee_page(request, pk):
         'scheds_count': scheds_count,
         'late_count': late_count,
         'not_late_count': not_late_count,
+        'date_today': date_today,
     }
     return render(request, 'employee/employee_details.html', ctx)
 
 @login_required(login_url=reverse_lazy("Login_page"))
 def Department_list(request):
-    depts = Department.objects.all()
+    depts = Department.objects.all().order_by('-department_name')
     paginator = Paginator(depts, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
