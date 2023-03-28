@@ -3,10 +3,8 @@
 {% block title %}FAMS | Create Schedule{% endblock title %}
 
 {% block content %}
-    <p class="font-bold text-xl my-4">Create Schedule</p>
-    <div class="flex">
-        <p class="pb-4 px-2">{{date_today}}</p>
-    </div>
+    <p class="font-bold text-xl text-gray-600">CREATE SCHEDULE</p>
+    <p class="text-sm">{{date_today}}</p>
     <div class="flex justify-center items-center">
         <div class="bg-white p-4 rounded-md shadow-xl w-7/12">
             {% for message in messages %}
@@ -16,7 +14,7 @@
                     <p class="text-sm text-green-600 py-2 text-center">{{ message }}</p>
                 {% endif %}
             {% endfor %}
-            <p class="font-bold text-xl pb-4 px-2 pt-2">Create new schedule details.</p>
+            <p class="font-bold text-xl text-gray-800 text-center">ADD NEW SCHEDULE DETAILS.</p>
             <form method="POST" class="flex flex-col gap-2">
                 {% csrf_token %}
                 <div class="flex flex-col">
@@ -32,11 +30,11 @@
                     {{form.weekday}}
                 </div>
                 <div class="flex flex-col">
-                    <label class="text-sm text-gray-500 font-bold">TIME IN (24Hrs format)</label>
+                    <label class="text-sm text-gray-500 font-bold">TIME IN (24HRS FORMAT)</label>
                     {{form.time_in}}
                 </div>
                 <div class="flex flex-col">
-                    <label class="text-sm text-gray-500 font-bold">TIME OUT (24Hrs format)</label>
+                    <label class="text-sm text-gray-500 font-bold">TIME OUT (24HRS FORMAT)</label>
                     {{form.time_out}}
                 </div>
                 <input type="submit" value="Add" class="p-2 rounded-md bg-green-600 font-bold text-white hover:bg-green-500 cursor-pointer transition transition-delay-1"/>
