@@ -10,38 +10,7 @@
         {% tailwind_css %}
         <link rel="stylesheet" href="{% static 'base.css' %}">
         <link rel="icon" type="image/png" href="{% static 'images/sjc.ico ' %}">
-        
-        <style>
-            .my-transition{
-                -webkit-transition: all 0.5s ease-in-out;
-                -moz-transition:all 0.5s ease-in-out;
-                -o-transition:all 0.5s ease-in-out;
-                transition:all 0.5s ease-in-out;
-              }
-            /* width */
-            ::-webkit-scrollbar {
-                width: 10px;
-            }
-            
-            /* Track */
-            ::-webkit-scrollbar-track {
-                background: #f1f1f1; 
-            }
-             
-            /* Handle */
-            ::-webkit-scrollbar-thumb {
-                background: #888; 
-            }
-            
-            /* Handle on hover */
-            ::-webkit-scrollbar-thumb:hover {
-                background: #555; 
-            }
-            html {
-                scroll-behavior: smooth;
-            }
-        </style>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
     </head>
     <body class="{% if user.is_authenticated %} md:grid grid-cols-6 {% endif %} gap-4 bg-gradient-to-r from-cyan-50 to-green-100">
         {% include "./components/loading.html" %}
