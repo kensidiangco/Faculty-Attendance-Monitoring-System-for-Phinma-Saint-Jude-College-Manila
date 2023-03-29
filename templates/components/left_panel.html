@@ -1,7 +1,7 @@
 {% load static %}
 {% load static tailwind_tags %}
 {% with request.resolver_match.url_name as url_name %}
-    <div class="hidden md:flex flex-col gap-2 border-r-1 py-4 px-2">
+    <div class="hidden md:flex flex-col gap-2 border-r-1 py-4 px-2 bg-gradient-to-r from-green-100 to-cyan-50">
         <a href="{% url 'DTR_Export' %}" class="text-sm font-bold text-gray-700">
             <img src="{% static 'images/sjc_logo.png' %}" class="w-48" />
             <div class="pl-4">

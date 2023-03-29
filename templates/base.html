@@ -7,40 +7,13 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        
         <title>{% block title %}{% endblock title %}</title>
+
         {% tailwind_css %}
         <link rel="stylesheet" href="{% static 'base.css' %}">
         <link rel="icon" type="image/png" href="{% static 'images/sjc.ico ' %}">
-        
         <style>
-            .my-transition{
-                -webkit-transition: all 0.5s ease-in-out;
-                -moz-transition:all 0.5s ease-in-out;
-                -o-transition:all 0.5s ease-in-out;
-                transition:all 0.5s ease-in-out;
-              }
-            /* width */
-            ::-webkit-scrollbar {
-                width: 10px;
-            }
-            
-            /* Track */
-            ::-webkit-scrollbar-track {
-                background: #f1f1f1; 
-            }
-             
-            /* Handle */
-            ::-webkit-scrollbar-thumb {
-                background: #888; 
-            }
-            
-            /* Handle on hover */
-            ::-webkit-scrollbar-thumb:hover {
-                background: #555; 
-            }
-            html {
-                scroll-behavior: smooth;
-            }
             *,
             ::before,
             ::after {
@@ -1412,21 +1385,25 @@
         </style>
         <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
     </head>
-    <body class="{% if user.is_authenticated %} md:grid grid-cols-6 {% endif %} gap-4 bg-gradient-to-r from-cyan-50 to-green-100">
-        {% include "./components/loading.html" %}
+    <body class="gap-4 bg-gradient-to-r from-cyan-50 to-green-100">
+        <div class="{% if user.is_authenticated %} md:grid grid-cols-6 {% endif %} ">
 
-        {% if user.is_authenticated %}
-            {% include "./components/left_panel.html" %}
-        {% endif %}
-
-        <div class="col-span-5 p-4">
-            {% block content %}
-            {% endblock content %}
+            {% include "./components/loading.html" %}
+    
+            {% if user.is_authenticated %}
+                {% include "./components/left_panel.html" %}
+                {% include "./components/left_panel_mobile.html" %}
+            {% endif %}
+    
+            <div class="col-span-5 p-4">
+                {% block content %}
+                {% endblock content %}
+            </div>
+            {% comment %} {% if user.is_authenticated %}
+            {% include './components/right_panel.html' %}
+            {% endif %} {% endcomment %}
         </div>
-
-        {% comment %} {% if user.is_authenticated %}
-        {% include './components/right_panel.html' %}
-        {% endif %} {% endcomment %}
+        {% include "./components/footer.html" %}
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {
