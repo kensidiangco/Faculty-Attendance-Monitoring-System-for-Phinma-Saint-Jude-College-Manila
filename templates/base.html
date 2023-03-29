@@ -42,7 +42,7 @@
                 scroll-behavior: smooth;
             }
         </style>
-        <script src="{% static './js/jquery-3.6.0.min.js' %}"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     </head>
     <body class="{% if user.is_authenticated %} md:grid grid-cols-6 {% endif %} gap-4 bg-gradient-to-r from-cyan-50 to-green-100">
         {% include "./components/loading.html" %}

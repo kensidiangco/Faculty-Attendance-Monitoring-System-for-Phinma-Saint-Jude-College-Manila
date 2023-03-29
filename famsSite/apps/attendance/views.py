@@ -295,7 +295,7 @@ def Add_Schedule_Page(request):
             sched = schedForm.save(commit=False)
             sched.save()
             messages.success(request, 'Sched successfully created')
-            return HttpResponseRedirect(reverse('Add_Schedule_Page'))
+            return HttpResponseRedirect(reverse('Add_schedule_Page'))
             
         else:
             messages.error(request, form.errors)
@@ -304,7 +304,7 @@ def Add_Schedule_Page(request):
         'form' : form,
         'date_today': date_today
     }
-    return render(request, './admin/add_Schedule.html',ctx)
+    return render(request, './admin/add_schedule.html',ctx)
 
 @login_required(login_url=reverse_lazy("Login_page"))
 def Employee_list(request):
