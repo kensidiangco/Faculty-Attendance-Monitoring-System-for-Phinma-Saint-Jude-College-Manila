@@ -30,11 +30,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'famsSite.apps.attendance',
+    'famsSite.apps.theme',
     'rest_framework',
     
     "corsheaders",
     'tailwind',
-    'theme',
     'django_browser_reload',
 ]
 
