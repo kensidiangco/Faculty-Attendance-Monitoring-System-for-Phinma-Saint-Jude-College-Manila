@@ -5,7 +5,8 @@
 
 {% block content %}
     <script type="text/javascript" src="{% static 'js/instascan.min.js' %}"></script>
-    <p class="font-bold text-xl p-4 text-gray-600">ATTENDANCE QR CODE SCANNER</p>
+    <p class="font-bold text-xl text-gray-600">ATTENDANCE QR CODE SCANNER</p>
+    <p id="date-time" class="text-sm"></p>
     <div class="flex flex-col justify-center items-center gap-4">
         <video id="scanner" class="rounded-xl shadow" style="width: 50em;">open camera</video>
         <audio id="scan-sound" src="{% static 'audio/scan_success.mp3'%}"></audio>
@@ -17,29 +18,30 @@
         </form>
     </div>
 
-
-    <script>
-        let scanner = new Instascan.Scanner({ video: document.getElementById('scanner') });
-        let scanSound = document.getElementById('scan-sound');
-        let qrCodeForm = document.getElementById('qr-code-form');
-        let qrCodeContentInput = document.getElementById('qr-code-content');
-
-        scanner.addListener('scan', function (content) {
-            scanSound.currentTime = 0;
-            scanSound.play();
-            console.log(content)
-            qrCodeContentInput.value = content;
-            qrCodeForm.submit()
-        });
-        
-        Instascan.Camera.getCameras().then(function (cameras) {
-            if (cameras.length > 0) {
-                scanner.start(cameras[0]);
-            } else {
-                console.error('No cameras found.');
-            }
-        }).catch(function (e) {
-            console.error(e);
-        });    
-    </script>
+    {% block script %}
+        <script>
+            let scanner = new Instascan.Scanner({ video: document.getElementById('scanner') });
+            let scanSound = document.getElementById('scan-sound');
+            let qrCodeForm = document.getElementById('qr-code-form');
+            let qrCodeContentInput = document.getElementById('qr-code-content');
+    
+            scanner.addListener('scan', function (content) {
+                scanSound.currentTime = 0;
+                scanSound.play();
+                console.log(content)
+                qrCodeContentInput.value = content;
+                qrCodeForm.submit()
+            });
+            
+            Instascan.Camera.getCameras().then(function (cameras) {
+                if (cameras.length > 0) {
+                    scanner.start(cameras[0]);
+                } else {
+                    console.error('No cameras found.');
+                }
+            }).catch(function (e) {
+                console.error(e);
+            });    
+        </script>
+    {% endblock script %}
 {% endblock content %}

@@ -6,8 +6,8 @@
     <p class="text-sm">{{date_today}}</p>
 
     <div class='flex justify-center pt-4'>
-        <div class="bg-white rounded-md shadow-xl">
-            <table class="border-separate rounded-md shadow-xl">
+        <div class="bg-white rounded-md shadow-md w-full overflow-x-auto max-w-screen-lg">
+            <table class="table-auto overflow-scroll overflow-x-auto w-full border-separate rounded-md md:shadow-md">
                 <tr class="border boreder-2 bg-green-500 rounded-md text-white">
                     <th class="p-2 rounded-md">DEPARTMENT NAME</th>
                     <th class="p-2 rounded-md">ADDRESS ROOM</th>
@@ -18,7 +18,7 @@
                 </tr>
                 {% if depts_count < 1 %}
                     <tr>
-                        <td colspan="10" class="p-4 text-gray-600 text-sm">No data to show.</td>
+                        <td colspan="10" class="p-4 text-gray-600 text-sm text-center">No data to show.</td>
                     </tr>
                 {% endif %}
                 {% for dept in page_obj %}
