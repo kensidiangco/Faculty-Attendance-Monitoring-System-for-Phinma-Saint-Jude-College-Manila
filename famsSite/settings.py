@@ -36,6 +36,11 @@ INSTALLED_APPS = [
     'tailwind',
     'theme',
     'django_browser_reload',
+    'django_crontab',
+]
+
+CRONJOBS = [
+    ('0 0 * * *', 'attendance.management.commands.update_schedules'),
 ]
 
 MIDDLEWARE = [
@@ -74,6 +79,13 @@ WSGI_APPLICATION = 'famsSite.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 DATABASES = {
     'default': {
