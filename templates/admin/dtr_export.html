@@ -59,6 +59,7 @@
                     <tr class="border boreder-2 bg-green-500 rounded-md text-white">
                         <th class="p-2 rounded-md">EMPLOYEE ID</th>
                         <th class="p-2 rounded-md">NAME</th>
+                        <th class="p-2 rounded-md">DATE</th>
                         <th class="p-2 rounded-md">WEEKDAY</th>
                         <th class="p-2 rounded-md">TIME IN</th>
                         <th class="p-2 rounded-md">TIME OUT</th>
@@ -74,6 +75,7 @@
                     <tr class="border boreder-2 hover:bg-gray-200 active:bg-gray-200 transition transition-delay-1 cursor-pointer">
                         <td class="p-2">{{record.employee.employee_ID}}</td>
                         <td class="p-2">{{record.employee.name}}</td>
+                        <td class="p-2">{{record.date_in}}</td>
                         <td class="p-2">{{record.weekday}}</td>
                         <td class="p-2">{{record.time_in}}</td>
                         {% if record.time_out == None %}

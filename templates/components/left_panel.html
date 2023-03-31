@@ -9,25 +9,25 @@
             </div>
         </a>
         <div class="flex flex-col">
-            <label class="text-md p-2 text-gray-500">ATTENDANCE</label>
+            <label class="font-bold p-2 text-gray-500">ATTENDANCE</label>
             <div class="flex flex-col pl-4 gap-2">
                 <a href="{% url 'QRPage' %}" class="{% if url_name == 'QRPage'%}bg-green-300 {% endif %} hover:bg-green-300 transition transition-delay-1 rounded-md p-2">QR Code Scan</a>
                 <a href="{% url 'Generate_QR_page' %}" class="{% if url_name == 'Generate_QR_page'%}bg-green-300 {% endif %} hover:bg-green-300 transition transition-delay-1 rounded-md p-2">Generate employee QR</a>
             </div>
-            <label class="text-md p-2 text-gray-500">RECORDS</label>
+            <label class="font-bold p-2 text-gray-500">RECORDS</label>
             <div class="flex flex-col pl-4 gap-2">
                 <a href="{% url 'DTR_Export' %}" class="{% if url_name == 'DTR_Export'%}bg-green-300 {% endif %} hover:bg-green-300 transition transition-delay-1 rounded-md p-2">Attendance Record</a>
                 <a href="{% url 'Employee_list' %}" class="{% if url_name == 'Employee_list' or url_name == 'Employee_page' %} bg-green-300 {% endif %} hover:bg-green-300 transition transition-delay-1 rounded-md p-2">Employee</a>
                 <a href="{% url 'Department_list' %}" class="{% if url_name == 'Department_list'%}bg-green-300 {% endif %} hover:bg-green-300 transition transition-delay-1 rounded-md p-2">Department</a>
             </div>
-            <label class="text-md p-2 text-gray-500">MANAGE</label>
+            <label class="font-bold p-2 text-gray-500">MANAGE</label>
             <div class="flex flex-col pl-4 gap-2">
                 <a href="{% url 'Add_Employee_Page' %}" class="{% if url_name == 'Add_Employee_Page'%}bg-green-300 {% endif %} hover:bg-green-300 transition transition-delay-1 rounded-md p-2">Add Employee</a>
                 <a href="{% url 'Add_Department_Page' %}" class="{% if url_name == 'Add_Department_Page'%}bg-green-300 {% endif %} hover:bg-green-300 transition transition-delay-1 rounded-md p-2">Add Department</a>
                 <a href="{% url 'Add_Subject_Page' %}" class="{% if url_name == 'Add_Subject_Page'%}bg-green-300 {% endif %} hover:bg-green-300 transition transition-delay-1 rounded-md p-2">Add Subject</a>
                 <a href="{% url 'Add_Schedule_Page' %}" class="{% if url_name == 'Add_Schedule_Page'%}bg-green-300 {% endif %} hover:bg-green-300 transition transition-delay-1 rounded-md p-2">Add Schedule</a>
             </div>
-            <label class="text-md p-2 text-gray-500">ACCOUNT</label>
+            <label class="font-bold p-2 text-gray-500">ACCOUNT</label>
             <div class="flex flex-col pl-4 gap-2">
                 {% if user.is_authenticated %}
                     {% comment %} <a href="{% url 'Admin_dashboard' %}" class="{% if url_name == 'Admin_dashboard'%}bg-green-300 {% endif %} hover:bg-green-300 transition transition-delay-1 rounded-md p-2">Dashboard</a> {% endcomment %}

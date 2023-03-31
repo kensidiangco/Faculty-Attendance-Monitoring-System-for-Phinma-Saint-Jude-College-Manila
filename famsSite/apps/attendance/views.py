@@ -11,7 +11,7 @@ from .forms import EmployeeForm, DepartmentForm, SubjectForm, ScheduleForm
 from django.core.paginator import Paginator
 from datetime import datetime, time
 from django.shortcuts import get_object_or_404
-from .utils import export_attendance_excel
+from .utils import export_attendance_excel, Time_in_sched, Time_out_sched
 
 timezone = pytz.timezone('Asia/Manila')
 date_today = datetime.now(timezone).strftime('%B %d, %Y %I:%M %p')
@@ -62,136 +62,41 @@ def QRPage(request):
 
     if request.method == 'POST':
         qr_code_content = request.POST.get('qr_code_content')
-        print(qr_code_content)
         try:
             emp = Employee.objects.get(employee_ID=str(qr_code_content))
         except:
             return render(request, './attendance/error.html')
-
-        uuid = request.GET.get('uuid')
-
-        if Employee_DTR.is_duplicate(uuid):
+        try:
+            uuid = request.GET.get('uuid')
+            Employee_DTR.is_duplicate(uuid)
+        except:
             return render(request, 'duplicate_scan.html')
-        else:
-            try:
-                # Check if professor is out if true then proceed to time in else time out
-                if emp.status == 'out':
+
+        try:
+            # Check if professor is out if true then proceed to time in else time out
+            if emp.status == 'out':
+                try:
                     hr_in = int(datetime.now().strftime('%H'))
                     emp_in = time(hour=hr_in - 1, minute=30, second=0)
                     emp_in_later = time(hour=hr_in + 1, minute=0, second=0)
-                    sched = emp.schedule_set.all().filter(time_in__range=(emp_in, emp_in_later), status="VACANT").order_by('time_in')
                     
                     # Check if professor has schedule today.
-                    try:
-                        if str(sched[len(sched)-1].weekday) != datetime.now().strftime('%A'):
-                            raise ValueError("You have no sched today!.")
-                    except:
-                        return render(request, './attendance/duplicate_attendance.html')
-
-                        
-                    dt = datetime.now()
-                    t = sched[len(sched)-1].time_in
-                    dt_t = datetime.combine(dt.date(), t)
-                    time_diff = dt - dt_t
-
-                    seconds_in_day = 24 * 60 * 60
-                    diff = divmod(time_diff.days * seconds_in_day + time_diff.seconds, 60)
-
-                    time_list = []
-                    for td in diff:
-                        time_list.append(td)
-                    h = 0
-                    m = time_list[0]
-                    s = time_list[1]
+                    sched = emp.schedule_set.all().filter(time_in__range=(emp_in, emp_in_later), status="VACANT").order_by('time_in')
                     
-                    if time_list[0] > 60:
-                        h += int(time_list[0] / 60)
-                        minus_mins = h * 60
-                        m -= minus_mins
-                    
-                    if h == 0:
-                        total_hours = "{}m {}s".format(m,s)
-                    
-                    if h == 0 and m == 0:
-                        total_hours = "{}s".format(s)
-                    
-                    if h != 0 and m != 0:
-                        total_hours = "{}h {}m {}s".format(h,m,s)
+                    if str(sched[len(sched)-1].weekday) == datetime.now().strftime('%A'):
+                        Time_in_sched(sched, emp)
+                    else:
+                        raise ValueError("You have no sched today!.")
+                except:
+                    return render(request, './attendance/duplicate_attendance.html')
+            
+            else:
+                emp_dtr = Employee_DTR.objects.all()
+                Time_out_sched(emp_dtr, emp)
 
-                    if time_diff.total_seconds() > 0:
-                        emp_dtr = Employee_DTR.objects.create(
-                            employee=emp,
-                            status='ongoing',
-                            weekday=datetime.now(timezone).strftime('%A'),
-                            time_in=datetime.now(timezone),
-                            attendance_status = 'LATE'
-                        )
-                        
-                    if time_diff.total_seconds() < 0:
-                        emp_dtr = Employee_DTR.objects.create(
-                            employee=emp,
-                            status='ongoing',
-                            weekday=datetime.now(timezone).strftime('%A'),
-                            time_in=datetime.now(timezone),
-                            attendance_status = 'NOT LATE'
-                        )
-
-                    emp_dtr.save()
-                    emp.status = 'in'
-                    schd = Schedule.objects.get(id = sched[len(sched)-1].id)
-                    schd.status = 'ONGOING'
-                    schd.save()
-                    emp.save()
-                
-                else:
-                    emp_dtr = Employee_DTR.objects.all()
-                    dtr = emp_dtr.get(employee = emp.id, status = "ongoing")
-
-                    dtr.status = 'done'
-                    timezone = pytz.timezone('Asia/Manila')
-                    dtr.time_out = datetime.now(timezone)
-                    emp.status = 'out'
-
-                    time_in = dtr.time_in
-                    time_out = dtr.time_out
-                    time_diff = time_out - time_in
-                    seconds_in_day = 24 * 60 * 60
-                    diff = divmod(time_diff.days * seconds_in_day + time_diff.seconds, 60)
-
-                    time_list = []
-                    for td in diff:
-                        time_list.append(td)
-                    h = 0
-                    m = time_list[0]
-                    s = time_list[1]
-                    
-                    if time_list[0] > 60:
-                        h += int(time_list[0] / 60)
-                        minus_mins = h * 60
-                        m -= minus_mins
-                    
-                    if h == 0:
-                        total_hours = "{}m {}s".format(m,s)
-                    
-                    if h == 0 and m == 0:
-                        total_hours = "{}s".format(s)
-                    
-                    if h != 0 and m != 0:
-                        total_hours = "{}h {}m {}s".format(h,m,s)
-
-                    dtr.total_working_hours = total_hours
-                    dtr.save() 
-                    sched = emp.schedule_set.all().filter(status="VACANT").order_by('time_in')
-                    schd = Schedule.objects.get(id = sched[len(sched)-1].id)
-                    schd.status = 'DONE'
-                    schd.save()
-                    
-                    emp.save()
-
-            except ValueError as error:
-                print(error)
-                return render(request, './attendance/error.html')
-                
+        except ValueError:
+            return render(request, './attendance/error.html')
+            
     return render(request, './attendance/qr.html')
 
 @login_required(login_url=reverse_lazy("Login_page"))
