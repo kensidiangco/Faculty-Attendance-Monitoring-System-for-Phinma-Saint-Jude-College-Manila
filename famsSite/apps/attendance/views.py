@@ -118,8 +118,7 @@ def DTR_Export(request):
             queryset = Employee_DTR.objects.filter(date_in__range=[DateFrom, DateTo]).order_by('-date_in')
 
             return export_attendance_excel('EMPLOYEE', queryset)    
-
-    
+ 
     ctx ={
         'page_obj': page_obj,
         'records_count': records_count,

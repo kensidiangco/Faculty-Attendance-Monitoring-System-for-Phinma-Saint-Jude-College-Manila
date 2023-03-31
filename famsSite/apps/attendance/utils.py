@@ -18,8 +18,8 @@ def Time_in_sched(sched, emp):
         emp_dtr = Employee_DTR.objects.create(
             employee=emp,
             status='ongoing',
-            weekday=datetime.now(timezone).strftime('%A'),
-            time_in=datetime.now(timezone),
+            weekday=datetime.now(tzinfo=timezone).strftime('%A'),
+            time_in=datetime.now(tzinfo=timezone),
             attendance_status = 'LATE'
         )
         
@@ -27,8 +27,8 @@ def Time_in_sched(sched, emp):
         emp_dtr = Employee_DTR.objects.create(
             employee=emp,
             status='ongoing',
-            weekday=datetime.now(timezone).strftime('%A'),
-            time_in=datetime.now(timezone),
+            weekday=datetime.now(tzinfo=timezone).strftime('%A'),
+            time_in=datetime.now(tzinfo=timezone),
             attendance_status = 'NOT LATE'
         )
 
@@ -44,7 +44,7 @@ def Time_out_sched(emp_dtr, emp):
     sched = emp.schedule_set.all().filter(status="VACANT").order_by('time_in')
     dtr.status = 'done'
     timezone = pytz.timezone('Asia/Manila')
-    dtr.time_out = datetime.now(timezone)
+    dtr.time_out = datetime.now(tzinfo=timezone)
     emp.status = 'out'
 
     time_in = dtr.time_in

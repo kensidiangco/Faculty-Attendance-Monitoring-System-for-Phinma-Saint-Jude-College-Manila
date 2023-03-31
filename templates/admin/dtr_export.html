@@ -1,4 +1,5 @@
 {% extends '../base.html' %}
+{% load tz %}
 {% block title %}FAMS | DTR{% endblock title %}
 
 {% block content %}
@@ -77,11 +78,11 @@
                         <td class="p-2">{{record.employee.name}}</td>
                         <td class="p-2">{{record.date_in}}</td>
                         <td class="p-2">{{record.weekday}}</td>
-                        <td class="p-2">{{record.time_in.time}}</td>
+                        <td class="p-2">{{record.time_in|timezone:"Asia/Manila"|date:"P"}}</td>
                         {% if record.time_out == None %}
                                 <td>---</td>
                             {% else %}
-                                <td>{{record.time_out.time}}</td>
+                                <td>{{record.time_out|timezone:"Asia/Manila"|date:"P"}}</td>
                             {% endif %}
                         <td class="p-2">
                             {% if record.time_out == None %}
