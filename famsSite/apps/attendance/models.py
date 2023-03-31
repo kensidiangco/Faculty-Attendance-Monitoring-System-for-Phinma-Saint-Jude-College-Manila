@@ -53,7 +53,7 @@ class Weekday(models.Model):
         return self.Weekday
 
 class Employee(models.Model):
-    employee_ID = models.CharField(max_length=100, blank=False, null=False)
+    employee_ID = models.CharField(max_length=100, blank=False, null=False, unique=True)
     name = models.CharField(max_length=100, blank=False, null=False)
     position = models.ForeignKey(Employee_Position, on_delete=models.CASCADE)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)

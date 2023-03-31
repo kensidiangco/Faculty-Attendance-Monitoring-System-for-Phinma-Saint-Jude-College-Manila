@@ -236,7 +236,8 @@ def Add_Employee_Page(request):
             return HttpResponseRedirect(reverse('Add_Employee_Page'))
             
         else:
-            messages.error(request, form.errors)
+            emp_id = empForm.cleaned_data.get('employeeID')
+            messages.error(request, "Employee ID must be unique.")
     ctx = {
         'form' : form,
         'date_today': date_today
