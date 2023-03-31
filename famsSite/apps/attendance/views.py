@@ -62,6 +62,7 @@ def QRPage(request):
 
     if request.method == 'POST':
         qr_code_content = request.POST.get('qr_code_content')
+        print(qr_code_content)
         try:
             emp = Employee.objects.get(employee_ID=str(qr_code_content))
         except:
@@ -295,7 +296,7 @@ def Add_Schedule_Page(request):
             sched = schedForm.save(commit=False)
             sched.save()
             messages.success(request, 'Sched successfully created')
-            return HttpResponseRedirect(reverse('Add_schedule_Page'))
+            return HttpResponseRedirect(reverse('Add_Schedule_Page'))
             
         else:
             messages.error(request, form.errors)
