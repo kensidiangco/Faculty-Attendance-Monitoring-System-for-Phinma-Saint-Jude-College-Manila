@@ -16,7 +16,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 DEBUG = False
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
-ALLOWED_HOSTS = ['fams-sjc.azurewebsites.net', '127.0.0.1']
+ALLOWED_HOSTS = ['fams-sjc.azurewebsites.net']
 CSRF_TRUSTED_ORIGINS = ['https://'+ os.environ['WEBSITE_HOSTNAME']]
 
 # Application definition
@@ -130,6 +130,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
+TIME_ZONE = 'Asia/Manila'
 
 USE_I18N = True
 USE_L10N = True

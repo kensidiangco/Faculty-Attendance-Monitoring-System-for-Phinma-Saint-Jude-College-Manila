@@ -90,9 +90,10 @@ def export_attendance_excel(name, queryset):
     ws.col(0).width  = 4000
     ws.col(1).width  = 8000
     ws.col(2).width  = 4000
-    ws.col(3).width  = 8000
-    ws.col(4).width  = 8000
+    ws.col(3).width  = 4000
+    ws.col(4).width  = 4000
     ws.col(5).width  = 4000
+    ws.col(6).width  = 4000
 
     # Sheet header, first row
     row_num = 0
@@ -100,7 +101,7 @@ def export_attendance_excel(name, queryset):
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
 
-    columns = ['employee id', 'name', 'weekday', 'date_in', 'in', 'out', 'total hours']
+    columns = ['employee id', 'name', 'date', 'weekday', 'in', 'out', 'total hours']
 
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
@@ -108,22 +109,20 @@ def export_attendance_excel(name, queryset):
     # Sheet body, remaining rows
     font_style = xlwt.XFStyle()
 
-    rows = queryset.values_list('employee__employee_ID', 'employee__name', 'weekday', 'date_in', 'time_in', 'time_out', 'total_working_hours')
-
+    rows = queryset.values_list('employee__employee_ID', 'employee__name', 'date_in', 'weekday', 'time_in__time', 'time_out__time', 'total_working_hours')
+    
     for row in rows:
         row_num += 1
         for col_num in range(len(row)):
             if isinstance(row[col_num], date):
                 dateCol = row[col_num].strftime('%B %d, %Y')
                 ws.write(row_num, col_num, dateCol, font_style)
+            elif isinstance(row[col_num], time):
+                timeCol = row[col_num].strftime('%I:%M %p')
+                ws.write(row_num, col_num, timeCol, font_style)
             else:
                 ws.write(row_num, col_num, row[col_num], font_style)
-                
-            if isinstance(row[col_num], time):
-                dateCol = row[col_num].strftime('%I:%M%p')
-                ws.write(row_num, col_num, dateCol, font_style)
-            else:
-                ws.write(row_num, col_num, row[col_num], font_style)
+            
 
     wb.save(response)
     return response

@@ -77,11 +77,11 @@
                         <td class="p-2">{{record.employee.name}}</td>
                         <td class="p-2">{{record.date_in}}</td>
                         <td class="p-2">{{record.weekday}}</td>
-                        <td class="p-2">{{record.time_in}}</td>
+                        <td class="p-2">{{record.time_in.time}}</td>
                         {% if record.time_out == None %}
                                 <td>---</td>
                             {% else %}
-                                <td>{{record.time_out}}</td>
+                                <td>{{record.time_out.time}}</td>
                             {% endif %}
                         <td class="p-2">
                             {% if record.time_out == None %}
