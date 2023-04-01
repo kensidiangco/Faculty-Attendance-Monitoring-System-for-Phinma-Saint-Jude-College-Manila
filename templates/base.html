@@ -1725,14 +1725,6 @@
                 $('#submitButton').attr('disabled', false);
             });
         </script>
-        <script>
-            function updateDateTime() {
-                const now = new Date();
-                const dateTime = now.toLocaleString();
-                document.getElementById("date-time").innerHTML = dateTime;
-            }
-            setInterval(updateDateTime, 1000);
-        </script>
         {% block script %}{% endblock script %}
     </body>
 </html>

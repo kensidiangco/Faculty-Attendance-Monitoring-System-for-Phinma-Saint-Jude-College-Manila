@@ -16,4 +16,12 @@
     {% if qr_code %}
         <img src="{{ qr_code.url }}">
     {% endif %}
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            const dateTime = now.toLocaleString();
+            document.getElementById("date-time").innerHTML = dateTime;
+        }
+        setInterval(updateDateTime, 1000);
+    </script>
 {% endblock content %}

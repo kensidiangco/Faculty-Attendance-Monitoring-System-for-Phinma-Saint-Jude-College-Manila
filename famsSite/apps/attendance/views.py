@@ -1,6 +1,6 @@
 import pytz
 import qrcode
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
@@ -58,8 +58,6 @@ def HomePage(request):
     return redirect('QRPage')
 
 def QRPage(request):
-    timezone = pytz.timezone('Asia/Manila')
-
     if request.method == 'POST':
         qr_code_content = request.POST.get('qr_code_content')
         try:
@@ -273,6 +271,16 @@ def Department_list(request):
         'page_obj': page_obj
     }
     return render(request, './admin/departments.html', ctx)
+
+@login_required(login_url=reverse_lazy("Login_page"))
+def Department_page(request, pk):
+    department = get_object_or_404(Department, pk=pk)
+    response_data = {
+        'id': department.id,
+        'name': department.department_name,
+        'employee': department.employee_set.all
+    }
+    return JsonResponse(response_data)
 
 @login_required(login_url=reverse_lazy("Login_page"))
 def Generate_QR_page(request):

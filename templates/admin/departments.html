@@ -13,6 +13,7 @@
                     <th class="p-2 rounded-md">ADDRESS ROOM</th>
                     <th class="p-2 rounded-md">ROOM NUMBER</th>
                     <th class="p-2 rounded-md">FLOOR LEVEL</th>
+                    <th class="p-2 rounded-md">INFO</th>
                     {% comment %} <th class="p-2 rounded-md">DETAIL VIEW</th> {% endcomment %}
 
                 </tr>
@@ -27,6 +28,7 @@
                     <td class="p-2">{{dept.address}}</td>
                     <td class="p-2">{{dept.room_no}}</td>
                     <td class="p-2">{{dept.floor}}</td>
+                    <td class="p-2 underline text-blue-600 text-center" onclick="openModal({{dept.id}})">View <span class="text-xl">+</span></td>
                     {% comment %} <td class="p-2">VIEW</td> {% endcomment %}
                 </tr>
                 {% endfor %}
@@ -47,4 +49,61 @@
             </div>
         </div>
     </div>
+    <div id="myModal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center hidden">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+        
+        <div class="modal-container bg-white w-auto md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
+        
+          <div class="modal-content py-4 text-left px-6">
+            <!-- Insert your modal content here -->
+            <p class="text-2xl font-bold" id="name"></p>
+            <div id="dept_content">
+            </div>
+          </div>
+          
+          <!-- Add a close button -->
+          <div class="modal-footer flex justify-end pt-2">
+            <button class="modal-close px-4 bg-transparent p-3 rounded-lg text-blue-500 hover:bg-gray-100 hover:text-blue-400" onclick="closeModal()">Close</button>
+          </div>
+          
+        </div>
+      </div>
+      <script>
+        function fetchData(pk) {
+            $.ajax({
+                url: '/api/dept/' + pk + '/', // Replace with your Django view URL
+                type: 'GET',
+                success: function(data) {
+                    $('#name').html(data.department_name + ' Employees');
+
+                    var parent = $('<div class="mt-2 flex flex-col gap-2">');
+                    $.each(data.employees, function(index, emp) {
+                        var div = $('<div>');
+                        div.append($('<p class="text-sm font-bold text-gray-600">').text(emp.position.position));
+                        div.append($('<p class="font-bold">').text(emp.name));
+                        parent.append(div);
+                    });
+                    $('#dept_content').html(parent);
+
+                    if (data.employees.length < 1) {
+                        $('#dept_content').html('<p class="p-4">No data found.</p>');
+                    }
+
+                },
+                error: function(xhr, status, error) {
+                    console.log(error); // Output any errors to the console for debugging purposes
+                }
+            });
+        }
+
+        function openModal(id) {
+            document.getElementById('myModal').classList.remove('hidden');
+            fetchData(id)
+        }
+
+        function closeModal() {
+            document.getElementById('myModal').classList.add('hidden');
+        }
+
+        </script>
 {% endblock content %}
