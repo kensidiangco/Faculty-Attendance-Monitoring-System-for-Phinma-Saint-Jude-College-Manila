@@ -40,7 +40,7 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    ('30 2 * * *', 'attendance.management.commands.update_schedules'),
+    ('0 3 * * *', 'attendance.management.commands.update_schedules'),
 ]
 
 MIDDLEWARE = [
