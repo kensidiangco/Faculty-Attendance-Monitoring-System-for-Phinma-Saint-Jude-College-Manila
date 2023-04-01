@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from attendance.models import Schedule
+from ...models import Schedule
 
 class Command(BaseCommand):
     help = 'Updates the status attribute of all Schedule objects'

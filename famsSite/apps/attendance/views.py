@@ -136,8 +136,8 @@ def Add_Employee_Page(request):
             emp = empForm.save(commit=False)
             name = empForm.cleaned_data.get('name')
             emp.save()
-            messages.success(request, '{} employee successfully created'.format(name))
-            return HttpResponseRedirect(reverse('Add_Employee_Page'))
+            messages.success(request, '{} employee successfully created'.format(name).upper())
+            return HttpResponseRedirect(reverse('Employee_page', kwargs={'pk': emp.id}))
             
         else:
             emp_id = empForm.cleaned_data.get('employeeID')
@@ -179,7 +179,7 @@ def Add_Subject_Page(request):
             subj = subjForm.save(commit=False)
             name = subjForm.cleaned_data.get('subject_name')
             subj.save()
-            messages.success(request, '{} employee successfully created'.format(name))
+            messages.success(request, '{} SUBJECT SUCCESSFULLY CREATED'.format(name).upper())
             return HttpResponseRedirect(reverse('Add_Subject_Page'))
             
         else:
@@ -200,8 +200,8 @@ def Add_Schedule_Page(request):
         if schedForm.is_valid():
             sched = schedForm.save(commit=False)
             sched.save()
-            messages.success(request, 'Sched successfully created')
-            return HttpResponseRedirect(reverse('Add_Schedule_Page'))
+            messages.success(request, '{} Sched for {} successfully created'.format(sched.subject.subject_name, sched.employee.name).upper())
+            return HttpResponseRedirect(reverse('Employee_page', kwargs={'pk':sched.employee.id}))
             
         else:
             messages.error(request, form.errors)
