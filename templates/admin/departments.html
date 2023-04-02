@@ -70,7 +70,8 @@
     </div>
       <script>
         function fetchData(pk) {
-            $('#loading').show();
+            $('#dept_content').html('<p class="p-4">Loading...</p>');
+            $('#name').html('Loading...');
             $.ajax({
                 url: '/api/dept/' + pk + '/', // Replace with your Django view URL
                 type: 'GET',
@@ -90,9 +91,6 @@
                         $('#dept_content').html('<p class="p-4">No data found.</p>');
                     }
 
-                },
-                complete: function() {
-                    $('#loading').hide(); // hide loading message
                 }
             });
         }
@@ -104,7 +102,6 @@
 
         function closeModal() {
             document.getElementById('myModal').classList.add('hidden');
-            $('#dept_content').html('<p class="p-4">Loading...</p>');
         }
 
         </script>

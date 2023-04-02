@@ -9,3 +9,5 @@ class Command(BaseCommand):
         for schedule in schedules:
             schedule.status = 'VACANT'
             schedule.save()
+
+        self.stdout.write(self.style.SUCCESS('SCHEDULE STATUS SUCCESSFULLY UPDATED!'))
