@@ -51,25 +51,26 @@
     </div>
     <div id="myModal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center hidden">
         <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
-        
+        <div id="loading" style="display: none;">Loading...</div>
+
         <div class="modal-container bg-white w-auto md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
-        
-          <div class="modal-content py-4 text-left px-6">
-            <!-- Insert your modal content here -->
-            <p class="text-2xl font-bold" id="name"></p>
-            <div id="dept_content">
+            <div class="modal-content py-4 text-left px-6">
+                <!-- Insert your modal content here -->
+                <p class="text-2xl font-bold" id="name"></p>
+                <div id="dept_content">
+                </div>
             </div>
-          </div>
-          
-          <!-- Add a close button -->
-          <div class="modal-footer flex justify-end pt-2">
-            <button class="modal-close px-4 bg-transparent p-3 rounded-lg text-blue-500 hover:bg-gray-100 hover:text-blue-400" onclick="closeModal()">Close</button>
-          </div>
-          
+            
+            <!-- Add a close button -->
+            <div class="modal-footer flex justify-end pt-2">
+                <button class="modal-close px-4 bg-transparent p-3 rounded-lg text-blue-500 hover:bg-gray-100 hover:text-blue-400" onclick="closeModal()">Close</button>
+            </div>
         </div>
-      </div>
+
+    </div>
       <script>
         function fetchData(pk) {
+            $('#loading').show();
             $.ajax({
                 url: '/api/dept/' + pk + '/', // Replace with your Django view URL
                 type: 'GET',
@@ -90,8 +91,8 @@
                     }
 
                 },
-                error: function(xhr, status, error) {
-                    console.log(error); // Output any errors to the console for debugging purposes
+                complete: function() {
+                    $('#loading').hide(); // hide loading message
                 }
             });
         }
@@ -103,6 +104,7 @@
 
         function closeModal() {
             document.getElementById('myModal').classList.add('hidden');
+            $('#dept_content').html('<p class="p-4">Loading...</p>');
         }
 
         </script>
