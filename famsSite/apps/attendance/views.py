@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate, login, logout
 from .models import Employee, Employee_DTR, Department, Schedule
 from .forms import EmployeeForm, DepartmentForm, SubjectForm, ScheduleForm
@@ -125,6 +126,7 @@ def DTR_Export(request):
     return render(request, './admin/dtr_export.html', ctx)
 
 @login_required(login_url=reverse_lazy("Login_page"))
+@require_POST
 def Add_Employee_Page(request):
     form = EmployeeForm
 
@@ -147,6 +149,7 @@ def Add_Employee_Page(request):
     return render(request, './admin/add_employee.html',ctx)
 
 @login_required(login_url=reverse_lazy("Login_page"))
+@require_POST
 def Add_Department_Page(request):
     form = DepartmentForm
 
@@ -168,6 +171,7 @@ def Add_Department_Page(request):
     return render(request, './admin/add_department.html',ctx)
 
 @login_required(login_url=reverse_lazy("Login_page"))
+@require_POST
 def Add_Subject_Page(request):
     form = SubjectForm
 
@@ -190,6 +194,7 @@ def Add_Subject_Page(request):
     return render(request, './admin/add_subject.html',ctx)
 
 @login_required(login_url=reverse_lazy("Login_page"))
+@require_POST
 def Add_Schedule_Page(request):
     form = ScheduleForm
 
@@ -283,6 +288,7 @@ def Department_page(request, pk):
     return JsonResponse(response_data)
 
 @login_required(login_url=reverse_lazy("Login_page"))
+@require_POST
 def Generate_QR_page(request):
     if request.method == 'POST':
         if 'generate_qr' in request.POST:

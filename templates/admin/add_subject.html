@@ -38,4 +38,10 @@
         </div>
     </div>
 
+    <script>
+        document.querySelector('input[type="submit"]').addEventListener('click', function() {
+            this.disabled = true;
+        });
+    </script>
+
 {% endblock content %}
