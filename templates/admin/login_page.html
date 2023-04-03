@@ -4,8 +4,13 @@
 
 {% block content %}
     <div class="flex flex-col gap-4 justify-center items-center">
-        <img src="{% static 'images/sjc_logo.png' %}" style="width: 23em;" />
-        <p class="text-xl font-bold p-2 text-gray-700">FACULTY ATTENDANCE MONITORING SYSTEM 🔒</p>
+        <img src="{% static 'images/sjc_logo2.png' %}" class="w-[8em]" />
+        <div class="">
+            <p class="text-center font-bold text-gray-700">Saint Jude College Manila</p>
+            <hr />
+            <p class="text-center font-bold text-gray-700">Phinma Network Education</p>
+        </div>
+        <p class="text-center text-xl font-bold text-gray-700">FACULTY ATTENDANCE MONITORING SYSTEM 🔒</p>
         <div class="bg-white/70 rounded-md shadow flex flex-col" style="width: 20em;">
             {% for message in messages %}
                 {% if message.tags == 'error' %}
@@ -19,7 +24,7 @@
                 {% csrf_token %}
                 <input type="text" class="rounded-md" id="username" name="username" placeholder="Username" autocapitalize="none" autofocus required>
                 <input type="password" class="rounded-md" id="password" name="password" placeholder="password" autocapitalize="none" required>
-                <input id="submitButton" type="submit" class="rounded-md hover:bg-green-400 bg-green-500 p-2 text-white font-bold cursor-pointer" value="Login"/>
+                <input id="submitButton" type="submit" class="rounded-md bg-gradient-to-b from-[#7F8B69] to-[#18442D] hover:from-[#52735D] hover:to-[#52735D] p-2 text-white font-bold cursor-pointer" value="Login"/>
             </form>
             <div class="flex justify-center p-2">
                 <a href="" class="text-sm cursor-pointer text-blue-600 text-center">Forgot password?</a>
