@@ -8,7 +8,7 @@
     <div class='flex justify-center pt-4'>
         <div class="bg-white rounded-md shadow-md w-full overflow-x-auto max-w-screen-lg">
             <table class="table-auto overflow-scroll overflow-x-auto w-full border-separate rounded-md md:shadow-md">
-                <tr class="border boreder-2 bg-green-500 rounded-md text-white">
+                <tr class="border boreder-2 bg-[#52735D] rounded-md text-white">
                     <th class="p-2 rounded-md">EMPLOYEE ID</th>
                     <th class="p-2 rounded-md">NAME</th>
                     <th class="p-2 rounded-md">POSITION</th>
@@ -29,7 +29,7 @@
                     <td class="p-2">{{emp.employee_status}}</td>
                     <td class="p-2">{{emp.department}}</td>
                     <td class="p-2">
-                        <a href="{% url 'Employee_page' pk=emp.pk %}" class="bg-green-600 py-2 px-4 rounded-md text-white hover:bg-green-500 transition transition-delay-1 text-center object-center">View</a>
+                        <a href="{% url 'Employee_page' pk=emp.pk %}" class="bg-gradient-to-b from-[#7F8B69] to-[#18442D] hover:from-[#52735D] hover:to-[#52735D] py-2 px-4 rounded-md text-white hover:bg-green-500 transition transition-delay-1 text-center object-center">View</a>
                     </td>
                 </tr>
                 {% endfor %}

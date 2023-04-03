@@ -8,25 +8,25 @@ class EmployeeForm(forms.ModelForm):
         widgets = {
             'employee_ID': forms.TextInput(attrs={
                 'placeholder': 'Employee ID',
-                'class': 'rounded-md',
+                'class': 'rounded-md p-2',
                 'required': True,
             }),
             'name': forms.TextInput(attrs={
                 'placeholder': 'Name',
-                'class': 'rounded-md',
+                'class': 'rounded-md p-2',
                 'required': True,
             }),
             'position': forms.Select(attrs={
                 'placeholder': 'Position',
-                'class': 'rounded-md',
+                'class': 'rounded-md p-2',
                 'required': True,
             }),
             'department': forms.Select(attrs={
-                'class': 'rounded-md',
+                'class': 'rounded-md p-2',
                 'required': True,
             }),
             'employee_status': forms.Select(attrs={
-                'class': 'rounded-md',
+                'class': 'rounded-md p-2',
                 'required': True,
             }),
         }
@@ -38,22 +38,22 @@ class DepartmentForm(forms.ModelForm):
         widgets = {
             'department_name': forms.TextInput(attrs={
                 'placeholder': 'Department name',
-                'class': 'rounded-md',
+                'class': 'rounded-md p-2',
                 'required': True
             }),
             'address': forms.TextInput(attrs={
                 'placeholder': 'Address',
-                'class': 'rounded-md',
+                'class': 'rounded-md p-2',
                 'required': True
             }),
             'room_no': forms.TextInput(attrs={
                 'placeholder': 'Room number',
-                'class': 'rounded-md',
+                'class': 'rounded-md p-2',
                 'required': True
             }),
             'floor': forms.TextInput(attrs={
                 'placeholder': 'Floor level',
-                'class': 'rounded-md',
+                'class': 'rounded-md p-2',
                 'required': True
             }),
         }
@@ -65,22 +65,22 @@ class SubjectForm(forms.ModelForm):
         widgets = {
             'subject_code': forms.TextInput(attrs={
                 'placeholder': 'Subject Code',
-                'class': 'rounded-md',
+                'class': 'rounded-md p-2',
                 'required': True
             }),
             'subject_name': forms.TextInput(attrs={
                 'placeholder': 'Subject name',
-                'class': 'rounded-md',
+                'class': 'rounded-md p-2',
                 'required': True
             }),
             'year': forms.TextInput(attrs={
                 'placeholder': 'Year level',
-                'class': 'rounded-md',
+                'class': 'rounded-md p-2',
                 'required': True
             }),
             'semester': forms.NumberInput(attrs={
                 'placeholder': 'Semester',
-                'class': 'rounded-md',
+                'class': 'rounded-md p-2',
                 'required': True
             }),
         }
@@ -91,23 +91,23 @@ class ScheduleForm(forms.ModelForm):
         fields = {'employee', 'subject', 'weekday', 'time_in', 'time_out'}
         widgets = {
             'employee': forms.Select(attrs={
-                'class': 'rounded-md',
+                'class': 'rounded-md p-2',
                 'required': True
             }),
             'subject': forms.Select(attrs={
-                'class': 'rounded-md',
+                'class': 'rounded-md p-2',
                 'required': True
             }),
             'weekday': forms.Select(attrs={
-                'class': 'rounded-md',
+                'class': 'rounded-md p-2',
                 'required': True
             }),
             'time_in': forms.TimeInput(attrs={
-                'class': 'rounded-md',
+                'class': 'rounded-md p-2',
                 'required': True,
             }),
             'time_out': forms.TimeInput(attrs={
-                'class': 'rounded-md',
+                'class': 'rounded-md p-2',
                 'required': True
             }),
         }

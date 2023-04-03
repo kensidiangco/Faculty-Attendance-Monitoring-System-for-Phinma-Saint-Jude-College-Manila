@@ -19,6 +19,12 @@ module.exports = {
        '../../**/*.py'
     ],
     theme: {
+        colors: {
+            'bg-sjc-green': '#52735D',
+            'bg-sjc-item-green': '#355C41',
+            'bg-sjc-th-green': '#52735D',
+        },
+
         extend: {},
     },
     plugins: [
