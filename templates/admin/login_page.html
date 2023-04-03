@@ -14,12 +14,12 @@
         <div class="bg-white/70 rounded-md shadow flex flex-col" style="width: 20em;">
             {% for message in messages %}
                 {% if message.tags == 'error' %}
-                    <p class="p-2 text-center text-red-500">{{ message }}</p>
+                    <p class="text-center text-red-500 p-2">{{ message }}</p>
                 {% else %}
-                    <p class="p-2 text-center text-green-500">{{ message }}</p>
+                    <p class="text-center text-green-500 p-2">{{ message }}</p>
                 {% endif %}
             {% endfor %}
-            <p class="text-xl font-bold mb-4 text-center p-4">ADMIN LOGIN</p>
+            <p class="text-xl font-bold text-center p-2">ADMIN LOGIN</p>
             <form id="myForm" method="POST" class="flex flex-col px-4 gap-4">
                 {% csrf_token %}
                 <input type="text" class="rounded-md" id="username" name="username" placeholder="Username" autocapitalize="none" autofocus required>
@@ -27,7 +27,7 @@
                 <input id="submitButton" type="submit" class="rounded-md bg-gradient-to-b from-[#7F8B69] to-[#18442D] hover:from-[#52735D] hover:to-[#52735D] p-2 text-white font-bold cursor-pointer" value="Login"/>
             </form>
             <div class="flex justify-center p-2">
-                <a href="" class="text-sm cursor-pointer text-blue-600 text-center">Forgot password?</a>
+                <a href="/accounts/password_reset/" class="text-sm cursor-pointer text-blue-600 text-center">Forgot password?</a>
                 {% comment %} <a href="" class="text-sm cursor-pointer">Doesn't have an account? request one.</a> {% endcomment %}
             </div>        
         </div>

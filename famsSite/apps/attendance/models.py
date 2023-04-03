@@ -30,6 +30,10 @@ class Employee_Position(models.Model):
     date_created = models.DateTimeField(auto_now=False, auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
+    class Meta:
+        verbose_name = "Employee Position"
+        verbose_name_plural = "Employee Positions"
+
     def __str__(self):
         return self.position
 
@@ -90,6 +94,10 @@ class Employee_DTR(models.Model):
     date_in = models.DateField(auto_now=False, auto_now_add=True, blank=True, null=True)
     date_created = models.DateTimeField(auto_now=False, auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
+
+    class Meta:
+        verbose_name = "Employee DTR"
+        verbose_name_plural = "Employee DTRs"
 
     def total_hours(self):
         time_in = self.time_in
