@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'theme',
     'django_browser_reload',
     'django_crontab',
+    'django_select2',
 ]
 
 CRONJOBS = [

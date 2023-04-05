@@ -41,7 +41,11 @@
                 </div>
                 <div class="flex flex-col">
                     <label class="text-sm text-gray-600 font-bold">STATUS:</label>
-                    <p class="text-green-500 font-bold">ACTIVE</p>
+                    {% if emp.working_status == "ACTIVE" %}
+                        <p class="text-green-500 font-bold">{{emp.working_status}}</p>
+                    {% else %}
+                        <p class="text-red-500 font-bold">{{emp.working_status}}</p>
+                    {% endif %}
                 </div>
             </div>
             <div class="flex flex-col gap-2">
