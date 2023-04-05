@@ -1,5 +1,17 @@
 from django import forms
 from .models import Employee, Department, Schedule, Subject
+from django_select2 import forms as s2forms
+
+class EmployeeWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "name__icontains",
+    ]
+
+class SubjectWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "subject_code__icontains",
+        "subject_name__icontains",
+    ]
 
 class EmployeeForm(forms.ModelForm):
     class Meta:
@@ -95,13 +107,13 @@ class SubjectForm(forms.ModelForm):
 class ScheduleForm(forms.ModelForm):
     class Meta:
         model = Schedule
-        fields = {'employee', 'subject', 'weekday', 'time_in', 'time_out'}
+        fields = {'employee', 'subject', 'weekday', 'time_in', 'time_out', 'expiration_date'}
         widgets = {
-            'employee': forms.Select(attrs={
+            'employee': EmployeeWidget(attrs={
                 'class': 'rounded-md p-2',
                 'required': True
             }),
-            'subject': forms.Select(attrs={
+            'subject': SubjectWidget(attrs={
                 'class': 'rounded-md p-2',
                 'required': True
             }),
@@ -111,10 +123,18 @@ class ScheduleForm(forms.ModelForm):
             }),
             'time_in': forms.TimeInput(attrs={
                 'class': 'rounded-md p-2',
+                'type': 'time',
                 'required': True,
             }),
             'time_out': forms.TimeInput(attrs={
                 'class': 'rounded-md p-2',
+                'type': 'time',
                 'required': True
+            }),
+            'expiration_date': forms.DateInput(attrs={
+                'class': 'rounded-md p-2',
+                'name': 'expiration',
+                'type': 'date',
+                'required': True,
             }),
         }

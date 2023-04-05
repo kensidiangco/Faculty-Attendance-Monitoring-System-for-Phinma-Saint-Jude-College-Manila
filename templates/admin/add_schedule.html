@@ -1,7 +1,15 @@
 {% extends '../base.html' %}
 {% load static %}
 {% block title %}FAMS | Create Schedule{% endblock title %}
-
+{% block head_content %}
+    {{ form.media.css }}
+    <style>
+        .select2-selection {
+            padding: 1.3em;
+            width: 100%;
+        }
+    </style>
+{% endblock head_content %}
 {% block content %}
     <p class="font-bold text-xl text-gray-600">CREATE SCHEDULE</p>
     <p class="text-sm">{{date_today}}</p>
@@ -37,9 +45,17 @@
                     <label class="text-sm text-gray-500 font-bold">TIME OUT (24HRS FORMAT)</label>
                     {{form.time_out}}
                 </div>
+                <div class="flex flex-col">
+                    <label class="text-sm text-gray-500 font-bold">EXPIRATION</label>
+                    {{form.expiration_date}}
+                </div>
                 <input type="submit" value="ADD" class="my-2 p-2 rounded-md bg-gradient-to-b from-[#7F8B69] to-[#18442D] hover:from-[#52735D] hover:to-[#52735D] font-bold text-white cursor-pointer transition transition-delay-1"/>
             </form>
         </div>
     </div>
-
+    {{ form.media.js }}
+    <script>
+        let today = new Date().toISOString().split('T')[0];
+        document.getElementsByName("expiration")[0].setAttribute('min', today);
+    </script>
 {% endblock content %}

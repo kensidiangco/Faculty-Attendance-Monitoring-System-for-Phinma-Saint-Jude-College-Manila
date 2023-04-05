@@ -25,18 +25,6 @@ class Department(models.Model):
     def __str__(self):
         return self.department_name
 
-class Employee_Position(models.Model):
-    position = models.CharField(max_length=100, blank=False, null=False)
-    date_created = models.DateTimeField(auto_now=False, auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
-
-    class Meta:
-        verbose_name = 'Employee Position'
-        verbose_name_plural = 'Employee Positions'
-
-    def __str__(self):
-        return self.position
-
 class Subject(models.Model):
     subject_code = models.CharField(max_length=100, blank=True, null=True, unique=True)
     subject_name = models.CharField(max_length=100, blank=False, null=False)
@@ -48,21 +36,24 @@ class Subject(models.Model):
     def __str__(self):
         return self.subject_name
 
-class Weekday(models.Model):
-    Weekday = models.CharField(max_length=100, blank=False, null=False, unique=True)
-    date_created = models.DateTimeField(auto_now=False, auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
-
-    def __str__(self):
-        return self.Weekday
-
 class Employee(models.Model):
+    POSITION_CHOICES = [
+        ('CONTRACTUAL', 'CONTRACTUAL'),
+        ('PART TIME', 'PART TIME'),
+        ('REGULAR', 'REGULAR'),
+    ]
+    EMPLOYEE_STATUS_CHOICES = [
+        ('DEAN', 'DEAN'),
+        ('PROFESSOR', 'PROFESSOR'),
+        ('PROGRAM HEAD', 'PROGRAM HEAD'),
+    ]
     employee_ID = models.CharField(max_length=100, blank=False, null=False, unique=True)
     name = models.CharField(max_length=100, blank=False, null=False)
-    position = models.ForeignKey(Employee_Position, on_delete=models.CASCADE)
+    position = models.CharField(choices=POSITION_CHOICES, max_length=20, null=True)
+    employee_status = models.CharField(choices=EMPLOYEE_STATUS_CHOICES, max_length=20, null=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
-    employee_status = models.ForeignKey(Employee_Status, on_delete=models.CASCADE, null=True, blank=True)
     status = models.CharField(max_length=20, default='OUT')
+    working_status = models.CharField(max_length=10, default='ACTIVE')
     date_created = models.DateTimeField(auto_now=False, auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
@@ -70,12 +61,22 @@ class Employee(models.Model):
         return self.name
 
 class Schedule(models.Model):
+    WEEKDAY_CHOICES = [
+        ('Sunday', 'Sunday'),
+        ('Monday', 'Monday'),
+        ('Tuesday', 'Tuesday'),
+        ('Wednesday', 'Wednesday'),
+        ('Thursday', 'Thursday'),
+        ('Friday', 'Friday'),
+        ('Saturday', 'Saturday'),
+    ]
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    weekday = models.ForeignKey(Weekday, on_delete=models.CASCADE)
+    weekday = models.CharField(choices=WEEKDAY_CHOICES, max_length=20)
     time_in = models.TimeField(auto_now=False, auto_now_add=False)
     time_out = models.TimeField(auto_now=False, auto_now_add=False)
     status = models.CharField(max_length=20, default='VACANT')
+    expiration_date = models.DateField(null=True)
     date_created = models.DateTimeField(auto_now=False, auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 

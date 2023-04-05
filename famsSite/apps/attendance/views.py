@@ -65,13 +65,15 @@ def QRPage(request):
         data = json.loads(qr_code_content)
         try:
             # Check if QR Data is valid
-            expiration_date = datetime.strptime(data['expiration'], '%Y-%m-%d')
-            current_date = date.today()
+            # expiration_date = datetime.strptime(data['expiration'], '%Y-%m-%d')
+            # current_date = date.today()
 
-            if current_date > expiration_date.date():
-                raise KeyError 
+            # if current_date > expiration_date.date():
+            #     raise KeyError 
             
             emp = Employee.objects.get(employee_ID=str(data['employee_id']))
+            if emp.status == "INACTIVE":
+                raise KeyError
             # Check if professor is out if true then proceed to time in else time out
             if emp.status == 'OUT' or emp.status == 'out':
                 # Check if professor has schedule today.
@@ -81,6 +83,12 @@ def QRPage(request):
                 emp_in = time(hour=hr_in, minute=30, second=0)
                 emp_in_later = time(hour=int(current_time.strftime("%H")) + 1, minute=0, second=0)
                 sched = emp.schedule_set.all().filter(time_in__range=(emp_in, emp_in_later), status="VACANT").order_by('time_in')
+                # Check if QR Data is valid
+                expiration_date = datetime.strptime(str(sched.last().expiration_date), '%Y-%m-%d')
+                current_date = date.today()
+
+                if current_date > expiration_date.date():
+                    raise KeyError 
                 
                 if sched:
 
@@ -101,7 +109,12 @@ def QRPage(request):
             return render(request, './attendance/error/error_attendance.html')
 
         except KeyError:
+            print("INVALID QR CODE")
             return render(request, './attendance/error/expired_qr.html')
+
+        except:
+            print("ERROR")
+            return render(request, './attendance/error/error_attendance.html')
 
             
     return render(request, './attendance/qr.html')
@@ -113,10 +126,12 @@ def QRSuccessPage(request):
 @login_required(login_url=reverse_lazy("Login_page"))
 def DTR_Export(request):
     employee_records = Employee_DTR.objects.all().order_by('-date_created') 
-    paginator = Paginator(employee_records, 8)
+    current_date = datetime.now()
+    SY_now = employee_records.filter(date_created__range=[datetime(current_date.year, 1, 1), datetime(current_date.year, 12, 31)])
+    paginator = Paginator(SY_now, 8)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    records_count = len(employee_records)
+    records_count = len(SY_now)
     
     if request.method == 'POST':
         if 'export_dtr' in request.POST:

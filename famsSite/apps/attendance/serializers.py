@@ -1,13 +1,7 @@
 from rest_framework import serializers
-from .models import Employee_DTR, Employee, Department, Employee_Position
-
-class Employee_Position_Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = Employee_Position
-        fields = '__all__'
+from .models import Employee_DTR, Employee, Department
 
 class Employee_Serializer(serializers.ModelSerializer):
-    position = Employee_Position_Serializer(read_only=True)
     class Meta:
         model = Employee
         fields = ('employee_ID', 'name', 'position')
