@@ -1,5 +1,7 @@
 import pytz
+import json
 import qrcode
+from io import BytesIO
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
@@ -9,7 +11,7 @@ from django.contrib.auth import authenticate, login, logout
 from .models import Employee, Employee_DTR, Department, Schedule
 from .forms import EmployeeForm, DepartmentForm, SubjectForm, ScheduleForm
 from django.core.paginator import Paginator
-from datetime import datetime, time
+from datetime import datetime, time, date
 from django.shortcuts import get_object_or_404
 from .utils import export_attendance_excel, Time_in_sched, Time_out_sched
 
@@ -60,15 +62,29 @@ def HomePage(request):
 def QRPage(request):
     if request.method == 'POST':
         qr_code_content = request.POST.get('qr_code_content')
+        data = json.loads(qr_code_content)
+
+        # Check if QR Code is not expired
         try:
-            emp = Employee.objects.get(employee_ID=str(qr_code_content))
+            expiration_date = datetime.strptime(data['expiration'], '%Y-%m-%d')
+            current_date = date.today()
+
+            if current_date > expiration_date.date():
+               raise KeyError 
+
+        except KeyError:
+            return render(request, './attendance/error/expired_qr.html')
+        # Check if QR Data is valid
+        try:
+            emp = Employee.objects.get(employee_ID=str(data['employee_id']))
         except:
-            return render(request, './attendance/error.html')
+            return render(request, './attendance/error/error_attendance.html')
+        # Check if QR Scan is duplicated
         try:
             uuid = request.GET.get('uuid')
             Employee_DTR.is_duplicate(uuid)
         except:
-            return render(request, 'duplicate_scan.html')
+            return render(request, './attendance/error/duplicate_attendance.html')
 
         try:
             # Check if professor is out if true then proceed to time in else time out
@@ -79,21 +95,21 @@ def QRPage(request):
                     emp_in_later = time(hour=hr_in + 1, minute=0, second=0)
                     
                     # Check if professor has schedule today.
-                    sched = emp.schedule_set.all().filter(time_in__range=(emp_in, emp_in_later), status="VACANT").order_by('time_in')
+                    sched = emp.schedule_set.all().filter(time_in__range=(emp_in, emp_in_later), status="").order_by('time_in')
                     
                     if str(sched[len(sched)-1].weekday) == datetime.now().strftime('%A'):
                         Time_in_sched(sched, emp)
                     else:
                         raise ValueError("You have no sched today!.")
                 except:
-                    return render(request, './attendance/duplicate_attendance.html')
+                    return render(request, './attendance/error/duplicate_attendance.html')
             
             else:
                 emp_dtr = Employee_DTR.objects.all()
                 Time_out_sched(emp_dtr, emp)
 
         except ValueError:
-            return render(request, './attendance/error.html')
+            return render(request, './attendance/error/error.html')
             
     return render(request, './attendance/qr.html')
 
@@ -104,7 +120,7 @@ def QRSuccessPage(request):
 @login_required(login_url=reverse_lazy("Login_page"))
 def DTR_Export(request):
     employee_records = Employee_DTR.objects.all().order_by('-date_created') 
-    paginator = Paginator(employee_records, 7)
+    paginator = Paginator(employee_records, 8)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     records_count = len(employee_records)
@@ -160,7 +176,7 @@ def Add_Department_Page(request):
             return HttpResponseRedirect(reverse('Add_Department_Page'))
             
         else:
-            messages.error(request, form.errors)
+            messages.error(request, 'Department name must be unique (Do not double click the submit button!)')
     ctx = {
         'form' : form,
         'date_today': date_today
@@ -286,15 +302,30 @@ def Department_page(request, pk):
 def Generate_QR_page(request):
     if request.method == 'POST':
         if 'generate_qr' in request.POST:
-            data = request.POST.get('qr_url')
-            qr = qrcode.QRCode(version=1, box_size=30, border=2)
-            qr.add_data(data)
+            employee_id = request.POST.get('employee_id')
+            expiration = request.POST.get('expiration')
+
+            data = {
+                'expiration': expiration,
+                'employee_id': employee_id
+            }
+            # Parse data using json
+            json_data = json.dumps(data)
+            qr = qrcode.QRCode(version=12, box_size=30, border=2, error_correction=qrcode.constants.ERROR_CORRECT_L)
+            qr.add_data(json_data)
             qr.make(fit=True)
+
+            # Save qr image
             img = qr.make_image(fill_color="black", back_color="white")
-            
-            # Render the QR code image in your template
+            # buffer = BytesIO()
+            # # img.save(buffer)
+            # response = HttpResponse(buffer.getvalue(), content_type='image/png')
+            # response['Content-Disposition'] = 'inline; filename="qr.png"'
+            # response['Content-Length'] = str(len(buffer.getvalue()))
+            # response['target'] = '_blank'
+
             response = HttpResponse(content_type='image/png')
-            response['Content-Disposition'] = 'attachment; filename="{}_QRCode.png"'.format(data)
+            response['Content-Disposition'] = 'attachment; filename="{}_QRCode.png"'.format(employee_id)
             img.save(response, 'PNG')
             return response
     else:

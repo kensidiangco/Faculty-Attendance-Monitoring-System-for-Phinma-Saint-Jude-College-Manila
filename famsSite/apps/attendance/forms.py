@@ -10,11 +10,13 @@ class EmployeeForm(forms.ModelForm):
                 'placeholder': 'Employee ID',
                 'class': 'rounded-md p-2',
                 'required': True,
+                'oninput': 'this.value = this.value.toUpperCase()',
             }),
             'name': forms.TextInput(attrs={
                 'placeholder': 'Name',
                 'class': 'rounded-md p-2',
                 'required': True,
+                'oninput': 'this.value = this.value.toUpperCase()',
             }),
             'position': forms.Select(attrs={
                 'placeholder': 'Position',
@@ -39,19 +41,21 @@ class DepartmentForm(forms.ModelForm):
             'department_name': forms.TextInput(attrs={
                 'placeholder': 'Department name',
                 'class': 'rounded-md p-2',
+                'oninput': 'this.value = this.value.toUpperCase()',
                 'required': True
             }),
             'address': forms.TextInput(attrs={
                 'placeholder': 'Address',
                 'class': 'rounded-md p-2',
+                'oninput': 'this.value = this.value.toUpperCase()',
                 'required': True
             }),
-            'room_no': forms.TextInput(attrs={
+            'room_no': forms.NumberInput(attrs={
                 'placeholder': 'Room number',
                 'class': 'rounded-md p-2',
                 'required': True
             }),
-            'floor': forms.TextInput(attrs={
+            'floor': forms.NumberInput(attrs={
                 'placeholder': 'Floor level',
                 'class': 'rounded-md p-2',
                 'required': True
@@ -66,16 +70,19 @@ class SubjectForm(forms.ModelForm):
             'subject_code': forms.TextInput(attrs={
                 'placeholder': 'Subject Code',
                 'class': 'rounded-md p-2',
+                'oninput': 'this.value = this.value.toUpperCase()',
                 'required': True
             }),
             'subject_name': forms.TextInput(attrs={
                 'placeholder': 'Subject name',
                 'class': 'rounded-md p-2',
+                'oninput': 'this.value = this.value.toUpperCase()',
                 'required': True
             }),
-            'year': forms.TextInput(attrs={
+            'year': forms.NumberInput(attrs={
                 'placeholder': 'Year level',
                 'class': 'rounded-md p-2',
+                'oninput': 'this.value = this.value.toUpperCase()',
                 'required': True
             }),
             'semester': forms.NumberInput(attrs={

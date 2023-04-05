@@ -34,16 +34,16 @@
                 {% endfor %}
             </table>
             <div class="flex gap-2 items-center mx-2">
-                <p class="px-4 py-2 float-left text-md text-green-600">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</p>
-                <div class="flex gap-2 justify-end">
+                <p class="px-4 py-2 float-left text-md text-[#18442D] text-xl">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</p>
+                <div class="flex gap-2 justify-end p-2">
     
                     {% if page_obj.has_previous %}
-                        <a href="?page=1" class="bg-gray-100 px-2 py-1 rounded-md hover:bg-gray-200 transition transition-delay-1 text-sm">&laquo; first</a>
-                        <a href="?page={{ page_obj.previous_page_number }}" class="bg-gray-100 px-2 py-1 rounded-md hover:bg-gray-200 transition transition-delay-1 text-sm">Prev</a>
+                        <a href="?page=1" class="bg-gradient-to-b from-[#7F8B69] to-[#18442D] hover:from-[#52735D] hover:to-[#52735D] p-2 rounded-md shadow text-white font-bold transition transition-delay-1 text-sm">&laquo; first</a>
+                        <a href="?page={{ page_obj.previous_page_number }}" class="bg-gradient-to-b from-[#7F8B69] to-[#18442D] hover:from-[#52735D] hover:to-[#52735D] p-2 rounded-md shadow text-white font-bold transition transition-delay-1 text-sm">Prev</a>
                     {% endif %}
                     {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}" class="bg-gray-100 px-2 py-1 rounded-md hover:bg-gray-200 transition transition-delay-1 text-sm">Next</a>
-                        <a href="?page={{ page_obj.paginator.num_pages }}" class="bg-gray-100 px-2 py-1 rounded-md hover:bg-gray-200 transition transition-delay-1 text-sm">Last &raquo;</a>
+                        <a href="?page={{ page_obj.next_page_number }}" class="bg-gradient-to-b from-[#7F8B69] to-[#18442D] hover:from-[#52735D] hover:to-[#52735D] p-2 rounded-md shadow text-white font-bold transition transition-delay-1 text-sm">Next</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}" class="bg-gradient-to-b from-[#7F8B69] to-[#18442D] hover:from-[#52735D] hover:to-[#52735D] p-2 rounded-md shadow text-white font-bold transition transition-delay-1 text-sm">Last &raquo;</a>
                     {% endif %}
                 </div>
             </div>
