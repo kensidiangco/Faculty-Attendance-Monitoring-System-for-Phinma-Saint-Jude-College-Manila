@@ -11,7 +11,7 @@ from django.contrib.auth import authenticate, login, logout
 from .models import Employee, Employee_DTR, Department, Schedule
 from .forms import EmployeeForm, DepartmentForm, SubjectForm, ScheduleForm
 from django.core.paginator import Paginator
-from datetime import datetime, time, date
+from datetime import datetime, time, date, timedelta
 from django.shortcuts import get_object_or_404
 from .utils import export_attendance_excel, Time_in_sched, Time_out_sched
 
@@ -63,53 +63,46 @@ def QRPage(request):
     if request.method == 'POST':
         qr_code_content = request.POST.get('qr_code_content')
         data = json.loads(qr_code_content)
-
-        # Check if QR Code is not expired
         try:
+            # Check if QR Data is valid
             expiration_date = datetime.strptime(data['expiration'], '%Y-%m-%d')
             current_date = date.today()
 
             if current_date > expiration_date.date():
-               raise KeyError 
-
-        except KeyError:
-            return render(request, './attendance/error/expired_qr.html')
-        # Check if QR Data is valid
-        try:
+                raise KeyError 
+            
             emp = Employee.objects.get(employee_ID=str(data['employee_id']))
-        except:
-            return render(request, './attendance/error/error_attendance.html')
-        # Check if QR Scan is duplicated
-        try:
-            uuid = request.GET.get('uuid')
-            Employee_DTR.is_duplicate(uuid)
-        except:
-            return render(request, './attendance/error/duplicate_attendance.html')
-
-        try:
             # Check if professor is out if true then proceed to time in else time out
-            if emp.status == 'out':
-                try:
-                    hr_in = int(datetime.now().strftime('%H'))
-                    emp_in = time(hour=hr_in - 1, minute=30, second=0)
-                    emp_in_later = time(hour=hr_in + 1, minute=0, second=0)
-                    
-                    # Check if professor has schedule today.
-                    sched = emp.schedule_set.all().filter(time_in__range=(emp_in, emp_in_later), status="").order_by('time_in')
-                    
-                    if str(sched[len(sched)-1].weekday) == datetime.now().strftime('%A'):
+            if emp.status == 'OUT' or emp.status == 'out':
+                # Check if professor has schedule today.
+                current_time = datetime.now()
+                one_hour_ago = current_time - timedelta(hours=1)
+                hr_in = int(one_hour_ago.strftime("%H"))
+                emp_in = time(hour=hr_in, minute=30, second=0)
+                emp_in_later = time(hour=int(current_time.strftime("%H")) + 1, minute=0, second=0)
+                sched = emp.schedule_set.all().filter(time_in__range=(emp_in, emp_in_later), status="VACANT").order_by('time_in')
+                
+                if sched:
+
+                    if str(sched.last().weekday).upper() == datetime.now().strftime('%A').upper():
                         Time_in_sched(sched, emp)
+                        return HttpResponseRedirect(reverse('DTR_Export'))
                     else:
-                        raise ValueError("You have no sched today!.")
-                except:
-                    return render(request, './attendance/error/duplicate_attendance.html')
+                        raise ValueError
+                else:
+                    raise ValueError
             
             else:
                 emp_dtr = Employee_DTR.objects.all()
                 Time_out_sched(emp_dtr, emp)
+                return HttpResponseRedirect(reverse('DTR_Export'))
 
         except ValueError:
-            return render(request, './attendance/error/error.html')
+            return render(request, './attendance/error/error_attendance.html')
+
+        except KeyError:
+            return render(request, './attendance/error/expired_qr.html')
+
             
     return render(request, './attendance/qr.html')
 

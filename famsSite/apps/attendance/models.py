@@ -8,8 +8,8 @@ class Employee_Status(models.Model):
     date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     class Meta:
-        verbose_name = "Employee Status"
-        verbose_name_plural = "Employee Statuses"
+        verbose_name = 'Employee Status'
+        verbose_name_plural = 'Employee Statuses'
 
     def __str__(self):
         return self.name
@@ -31,8 +31,8 @@ class Employee_Position(models.Model):
     date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     class Meta:
-        verbose_name = "Employee Position"
-        verbose_name_plural = "Employee Positions"
+        verbose_name = 'Employee Position'
+        verbose_name_plural = 'Employee Positions'
 
     def __str__(self):
         return self.position
@@ -62,7 +62,7 @@ class Employee(models.Model):
     position = models.ForeignKey(Employee_Position, on_delete=models.CASCADE)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     employee_status = models.ForeignKey(Employee_Status, on_delete=models.CASCADE, null=True, blank=True)
-    status = models.CharField(max_length=20, default="out")
+    status = models.CharField(max_length=20, default='OUT')
     date_created = models.DateTimeField(auto_now=False, auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
@@ -75,7 +75,7 @@ class Schedule(models.Model):
     weekday = models.ForeignKey(Weekday, on_delete=models.CASCADE)
     time_in = models.TimeField(auto_now=False, auto_now_add=False)
     time_out = models.TimeField(auto_now=False, auto_now_add=False)
-    status = models.CharField(max_length=20, default="")
+    status = models.CharField(max_length=20, default='VACANT')
     date_created = models.DateTimeField(auto_now=False, auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
@@ -85,6 +85,7 @@ class Schedule(models.Model):
 class Employee_DTR(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE, null=True, blank=True)
     weekday = models.CharField(max_length=20, blank=True, null=True)
     time_in = models.DateTimeField(auto_now=False, auto_now_add=False)
     time_out = models.DateTimeField(null=True)
@@ -96,8 +97,8 @@ class Employee_DTR(models.Model):
     date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     class Meta:
-        verbose_name = "Employee DTR"
-        verbose_name_plural = "Employee DTRs"
+        verbose_name = 'Employee DTR'
+        verbose_name_plural = 'Employee DTRs'
 
     def total_hours(self):
         time_in = self.time_in
@@ -119,18 +120,18 @@ class Employee_DTR(models.Model):
             m -= minus_mins
         
         if h == 0:
-            total_hours = "{}m {}s".format(m,s)
+            total_hours = '{}m {}s'.format(m,s)
         
         if h == 0 and m == 0:
-            total_hours = "{}s".format(s)
+            total_hours = '{}s'.format(s)
         
         if h != 0 and m != 0:
-            total_hours = "{}h {}m {}s".format(h,m,s)
+            total_hours = '{}h {}m {}s'.format(h,m,s)
             
         return total_hours
 
     def __str__(self):
-        return f"{self.employee.name} ({self.date_in})"
+        return f'{self.employee.name} ({self.date_in})'
 
     @classmethod
     def is_duplicate(cls, uuid):

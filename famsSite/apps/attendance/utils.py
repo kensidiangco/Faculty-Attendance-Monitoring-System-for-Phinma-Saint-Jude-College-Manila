@@ -9,43 +9,46 @@ import pytz
 timezone = pytz.timezone('Asia/Manila')
 
 def Time_in_sched(sched, emp):
+    # Getting time difference of time today and time in sched to determine if employee is late
     dt = datetime.now()
-    t = sched[len(sched)-1].time_in
-    dt_t = datetime.combine(dt.date(), t)
-    time_diff = dt - dt_t
+    time_in_sched = sched.last().time_in
+    dt_and_time_in_sched = datetime.combine(dt.date(), time_in_sched)
+    time_diff = dt - dt_and_time_in_sched
 
+    # If late
     if time_diff.total_seconds() > 0:
         emp_dtr = Employee_DTR.objects.create(
             employee=emp,
-            status='ongoing',
+            schedule=sched.last(),
+            status='ONGOING',
             weekday=datetime.now(timezone).strftime('%A'),
             time_in=datetime.now(timezone),
             attendance_status = 'LATE'
         )
-        
+    # If not late
     if time_diff.total_seconds() < 0:
         emp_dtr = Employee_DTR.objects.create(
             employee=emp,
-            status='ongoing',
+            schedule=sched.last(),
+            status='ONGOING',
             weekday=datetime.now(timezone).strftime('%A'),
             time_in=datetime.now(timezone),
             attendance_status = 'NOT LATE'
         )
-
-    emp.status = 'in'
-    schd = Schedule.objects.get(id = sched[len(sched)-1].id)
+    # Change the status for tracking the data
+    emp.status = 'IN'
+    schd = Schedule.objects.get(id = sched.last().id)
     schd.status = 'ONGOING'
     emp_dtr.save()
     schd.save()
     emp.save()
 
 def Time_out_sched(emp_dtr, emp):
-    dtr = emp_dtr.get(employee=emp.id, status="ongoing")
-    sched = emp.schedule_set.all().filter(status="").order_by('time_in')
-    dtr.status = 'done'
+    dtr = emp_dtr.get(employee=emp.id, status="ONGOING")
+    sched = emp.schedule_set.all().filter(status="ONGOING").order_by('time_in')
+    dtr.status = 'DONE'
     timezone = pytz.timezone('Asia/Manila')
     dtr.time_out = datetime.now(timezone)
-    emp.status = 'out'
 
     time_in = dtr.time_in
     time_out = dtr.time_out
@@ -56,6 +59,7 @@ def Time_out_sched(emp_dtr, emp):
     time_list = []
     for td in diff:
         time_list.append(td)
+
     h = 0
     m = time_list[0]
     s = time_list[1]
@@ -76,11 +80,13 @@ def Time_out_sched(emp_dtr, emp):
 
     dtr.total_working_hours = total_hours
     dtr.save() 
-    schd = Schedule.objects.get(id = sched[len(sched)-1].id)
+    schd = Schedule.objects.get(id = sched.last().id)
     schd.status = 'DONE'
     schd.save()
-    
+
+    emp.status = 'OUT'
     emp.save()
+
 def export_attendance_excel(name, queryset):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="{}\'s DTR.xls"'.format(name)
