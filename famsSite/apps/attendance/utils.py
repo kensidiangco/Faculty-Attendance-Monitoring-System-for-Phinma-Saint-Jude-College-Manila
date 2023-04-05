@@ -41,7 +41,7 @@ def Time_in_sched(sched, emp):
 
 def Time_out_sched(emp_dtr, emp):
     dtr = emp_dtr.get(employee=emp.id, status="ongoing")
-    sched = emp.schedule_set.all().filter(status="VACANT").order_by('time_in')
+    sched = emp.schedule_set.all().filter(status="").order_by('time_in')
     dtr.status = 'done'
     timezone = pytz.timezone('Asia/Manila')
     dtr.time_out = datetime.now(timezone)
