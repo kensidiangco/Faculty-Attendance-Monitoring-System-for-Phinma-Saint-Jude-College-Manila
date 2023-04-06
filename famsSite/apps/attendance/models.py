@@ -81,7 +81,7 @@ class Schedule(models.Model):
     date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     def __str__(self):
-        return self.subject.subject_name
+        return f'{self.subject.subject_name} ({self.status})'
 
 class Employee_DTR(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
