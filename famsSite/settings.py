@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     'tailwind',
     'theme',
     'django_browser_reload',
-    'django_crontab',
     'django_select2',
     "django_apscheduler",
 ]
