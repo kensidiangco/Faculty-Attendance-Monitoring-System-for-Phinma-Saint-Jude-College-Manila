@@ -7,7 +7,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 DEBUG = False
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
-ALLOWED_HOSTS = ['fams-sjc.azurewebsites.net']
+ALLOWED_HOSTS = ['fams-sjc.azurewebsites.net', 'localhost', '127.0.0.1']
 CSRF_TRUSTED_ORIGINS = ['https://'+ os.environ['WEBSITE_HOSTNAME']]
 
 INSTALLED_APPS = [
@@ -23,7 +23,7 @@ INSTALLED_APPS = [
     
     "corsheaders",
     'tailwind',
-    'theme',
+    'theme.apps.ThemeConfig',
     'django_browser_reload',
     'django_select2',
     "django_apscheduler",

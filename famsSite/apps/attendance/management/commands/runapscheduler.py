@@ -1,23 +1,35 @@
 import logging
+import pytz
 from django.conf import settings
 from datetime import datetime
-from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from django.core.management.base import BaseCommand
 from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
 from django_apscheduler import util
-from ...models import Schedule
+from ...models import Schedule, Employee_DTR
 
 logger = logging.getLogger(__name__)
+timezone = pytz.timezone('Asia/Manila')
 
-def my_job():
-    vacant_scheds = Schedule.objects.filter(status="DONE")
-    for sched in vacant_scheds:
+def update_sched_job():
+    done_scheds = Schedule.objects.filter(status="DONE")
+    for sched in done_scheds:
         if str(sched.weekday).upper() == datetime.now().strftime('%A').upper():
             sched.status = "VACANT"
             sched.save()
+
     logger.info("SCHEDULE STATUS UPDATED...")
+    
+def sched_time_out_tracker_job():
+    ongoing_dtrs = Employee_DTR.objects.filter(status="ONGOING")
+    for dtr in ongoing_dtrs:
+        if dtr.schedule.time_out == datetime.now().time():
+            dtr.time_out = datetime.now(timezone)
+            dtr.save()
+            
+    logger.info("DTR OUT UPDATED...")
 
 
 # The `close_old_connections` decorator ensures that database connections, that have become
@@ -39,17 +51,26 @@ class Command(BaseCommand):
     help = "Runs APScheduler."
 
     def handle(self, *args, **options):
-        scheduler = BlockingScheduler(timezone=settings.TIME_ZONE)
+        scheduler = BackgroundScheduler(timezone=settings.TIME_ZONE)
         scheduler.add_jobstore(DjangoJobStore(), "default")
 
         scheduler.add_job(
-            my_job,
-            trigger=CronTrigger(hour='0', minute='0'),  # Every 10 seconds
-            id="my_job",  # The `id` assigned to each job MUST be unique
+            update_sched_job,
+            trigger=CronTrigger(hour='0', minute='0'),  # Every midnight
+            id="update_sched_job",  # The `id` assigned to each job MUST be unique
             max_instances=1,
             replace_existing=True,
         )
-        logger.info("Added job 'my_job'.")
+        logger.info("Added job 'update_sched_job'.")
+
+        scheduler.add_job(
+            sched_time_out_tracker_job,
+            trigger=CronTrigger(minute='30'),
+            id="sched_time_out_tracker_job",
+            max_instance=1,
+            replace_existing=True,
+        )
+        logger.info("Added job 'sched_time_out_tracker_job'.")
 
         scheduler.add_job(
             delete_old_job_executions,
