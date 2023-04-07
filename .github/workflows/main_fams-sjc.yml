@@ -36,6 +36,7 @@ jobs:
       - name: Activate virtual environment and run Django commands
         run: |
           source venv/bin/activate
+          export PYTHONPATH=$PYTHONPATH:$(pwd)/venv/lib/python3.10/site-packages
           export DJANGO_SETTINGS_MODULE=famsSite.settings.production
           python manage.py runapscheduler
         
