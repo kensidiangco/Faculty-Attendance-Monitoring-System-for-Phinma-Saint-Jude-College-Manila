@@ -61,3 +61,6 @@ jobs:
           app-name: 'fams-sjc'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_008ADB3682AB4706A3DCEDAA61D4EB2E }}
+
+      - name: 'Running apscheduler'
+        run: python manage.py runapscheduler
