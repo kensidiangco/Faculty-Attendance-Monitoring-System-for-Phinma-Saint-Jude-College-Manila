@@ -34,7 +34,7 @@ jobs:
         run: echo "export SECRET_KEY='${{ secrets.AZURE_SECRET_KEY }}'" >> $GITHUB_ENV
 
       - name: Add virtual environment to PYTHONPATH
-        run: echo "export PYTHONPATH=$PYTHONPATH:/path/to/venv" >> $GITHUB_ENV
+        run: echo "export PYTHONPATH=$PYTHONPATH:$HOME/site/wwwroot/venv/lib/python3.10/site-packages" >> $GITHUB_ENV
 
       - name: Run apscheduler
         run: |
