@@ -33,6 +33,9 @@ jobs:
       - name: Set environment variable for secret key
         run: echo "export SECRET_KEY='${{ secrets.AZURE_SECRET_KEY }}'" >> $GITHUB_ENV
 
+      - name: Add virtual environment to PYTHONPATH
+        run: echo "export PYTHONPATH=$PYTHONPATH:/path/to/venv" >> $GITHUB_ENV
+
       - name: Run apscheduler
         run: |
           source venv/bin/activate
