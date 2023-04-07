@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     "django_apscheduler",
 ]
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
-APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
+APSCHEDULER_RUN_NOW_TIMEOUT = 59  # Seconds
 
 # TAILWIND_APP_NAME = 'theme'
 
@@ -87,6 +87,21 @@ DATABASES = {
         'PASSWORD': os.environ['DB_PSSWRD'],
         'HOST': os.environ['DB_HOST'],
         'PORT': os.environ['DB_PORT'],
+    }
+}
+
+# Use DjangoJobStore with PostgreSQL
+jobstores = {
+    'default': {
+        'type': 'djangojobstore',
+        'database': 'default'
+    }
+}
+
+# Use the default ThreadPoolExecutor with PostgreSQL
+executors = {
+    'default': {
+        'type': 'threadpool'
     }
 }
 
