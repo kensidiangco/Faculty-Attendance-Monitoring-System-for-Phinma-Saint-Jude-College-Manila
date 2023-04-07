@@ -30,7 +30,10 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: 'Running apscheduler'
+      - name: Set environment variable for secret key
+        run: echo "export SECRET_KEY=${{ secrets.AZURE_SECRET_KEY }}" >> $GITHUB_ENV
+
+      - name: Run apscheduler
         run: python manage.py runapscheduler
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
@@ -64,3 +67,5 @@ jobs:
           app-name: 'fams-sjc'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_008ADB3682AB4706A3DCEDAA61D4EB2E }}
+        env:
+          DJANGO_SETTINGS_MODULE: 'fams-sjc.settings.production'
