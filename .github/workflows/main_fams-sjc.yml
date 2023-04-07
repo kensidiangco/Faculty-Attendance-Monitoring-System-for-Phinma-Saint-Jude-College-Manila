@@ -34,7 +34,10 @@ jobs:
         run: echo "export SECRET_KEY='${{ secrets.AZURE_SECRET_KEY }}'" >> $GITHUB_ENV
 
       - name: Activate virtual environment and run Django commands
+        env:
+            PYTHONPATH: ${{ github.workspace }}
         run: |
+          source venv/bin/activate
           export DJANGO_SETTINGS_MODULE=famsSite.settings.production
           python manage.py runapscheduler
         
