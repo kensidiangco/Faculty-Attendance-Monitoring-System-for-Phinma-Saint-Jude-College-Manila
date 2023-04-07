@@ -29,6 +29,9 @@ jobs:
       
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      - name: 'Running apscheduler'
+        run: python manage.py runapscheduler
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       
@@ -61,6 +64,3 @@ jobs:
           app-name: 'fams-sjc'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_008ADB3682AB4706A3DCEDAA61D4EB2E }}
-
-      - name: 'Running apscheduler'
-        run: python manage.py runapscheduler
