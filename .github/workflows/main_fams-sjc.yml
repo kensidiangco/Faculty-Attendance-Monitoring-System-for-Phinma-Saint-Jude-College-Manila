@@ -1,7 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-# More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
-
 name: Build and deploy Python app to Azure Web App - fams-sjc
 
 on:
@@ -33,14 +29,8 @@ jobs:
       - name: Set environment variable for secret key
         run: echo "export SECRET_KEY='${{ secrets.AZURE_SECRET_KEY }}'" >> $GITHUB_ENV
 
-      - name: Add virtual environment path to PYTHONPATH
+      - name: Run apscheduler
         run: |
-          source venv/bin/activate
-          export PYTHONPATH=$PYTHONPATH:$(pwd)/venv/lib/python3.10/site-packages
-
-      - name: Activate virtual environment and run Django commands
-        run: |
-          source venv/bin/activate
           export DJANGO_SETTINGS_MODULE=famsSite.settings.production
           python manage.py runapscheduler
         
