@@ -35,7 +35,7 @@ jobs:
 
       - name: Start scheduler
         run: |
-          deactivate
+          source venv/bin/deactivate
           nohup python3 manage.py runapscheduler &
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
