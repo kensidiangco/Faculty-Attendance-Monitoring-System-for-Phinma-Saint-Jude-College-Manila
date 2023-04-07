@@ -37,10 +37,6 @@ jobs:
         run: |
           source venv/bin/activate
           export PYTHONPATH=$PYTHONPATH:$(pwd)/venv/lib/python3.10/site-packages
-
-      - name: Activate virtual environment and run Django commands
-        run: |
-          source venv/bin/activate
           python manage.py runapscheduler
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
