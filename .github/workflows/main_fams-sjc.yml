@@ -29,18 +29,6 @@ jobs:
       
       - name: Install dependencies
         run: pip install -r requirements.txt
-
-      - name: Set environment variable for secret key
-        run: echo "export SECRET_KEY='${{ secrets.AZURE_SECRET_KEY }}'" >> $GITHUB_ENV
-
-      - name: Add virtual environment to PYTHONPATH
-        run: echo "export PYTHONPATH=$PYTHONPATH:$HOME/site/wwwroot/venv/lib/python3.10/site-packages" >> $GITHUB_ENV
-
-      - name: Run apscheduler
-        run: |
-          source venv/bin/activate
-          export DJANGO_SETTINGS_MODULE=famsSite.settings.production
-          python manage.py runapscheduler
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       
