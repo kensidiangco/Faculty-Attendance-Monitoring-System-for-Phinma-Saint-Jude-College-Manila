@@ -71,4 +71,6 @@ jobs:
           SECRET_KEY: ${{ secrets.AZURE_SECRET_KEY }}
 
       - name: Run apscheduler
-        run: python manage.py runapscheduler
+        run: |
+          export DJANGO_SETTINGS_MODULE=myapp.settings.production
+          python manage.py runapscheduler
