@@ -33,16 +33,11 @@ jobs:
       - name: Set environment variable for secret key
         run: echo "export SECRET_KEY='${{ secrets.AZURE_SECRET_KEY }}'" >> $GITHUB_ENV
 
-      - name: Add virtual environment path to PYTHONPATH
-        run: |
-          source venv/bin/activate
-          export PYTHONPATH=$PYTHONPATH:$(pwd)/venv/lib/python3.10/site-packages
-
       - name: Activate virtual environment and run Django commands
         run: |
           source venv/bin/activate
           export DJANGO_SETTINGS_MODULE=famsSite.settings.production
-          python3 manage.py runapscheduler
+          python manage.py runapscheduler
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       
