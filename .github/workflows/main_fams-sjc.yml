@@ -29,9 +29,6 @@ jobs:
       
       - name: Install dependencies
         run: pip install -r requirements.txt
-
-      - name: Set environment variable for secret key
-        run: echo "export SECRET_KEY=${{ secrets.AZURE_SECRET_KEY }}" >> $GITHUB_ENV
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       
@@ -66,9 +63,7 @@ jobs:
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_008ADB3682AB4706A3DCEDAA61D4EB2E }}
 
       - name: Set environment variable for secret key
-        uses: actions/set-env@v2
-        with:
-          SECRET_KEY: ${{ secrets.AZURE_SECRET_KEY }}
+        run: echo "export SECRET_KEY=${{ secrets.AZURE_SECRET_KEY }}" >> $GITHUB_ENV
 
       - name: Run apscheduler
         run: |
