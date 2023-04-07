@@ -29,14 +29,6 @@ jobs:
       
       - name: Install dependencies
         run: pip install -r requirements.txt
-
-      - name: Set environment SECRET_KEY 
-        run: echo "export SECRET_KEY='${{ secrets.AZURE_SECRET_KEY }}'" >> $GITHUB_ENV
-
-      - name: Start scheduler
-        run: |
-          source venv/bin/deactivate
-          nohup python3 manage.py runapscheduler &
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       
