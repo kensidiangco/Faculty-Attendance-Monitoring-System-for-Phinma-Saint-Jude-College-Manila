@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from .apps.attendance.management.commands import runapscheduler
 
 urlpatterns = [
     path('admin/', admin.site.urls),
