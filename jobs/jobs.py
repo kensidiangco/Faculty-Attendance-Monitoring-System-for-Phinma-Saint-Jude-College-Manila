@@ -1,7 +1,7 @@
 from django_apscheduler import util
 from django_apscheduler.models import DjangoJobExecution
 from attendance.models import Schedule, Employee_DTR
-import datetime
+from datetime import datetime
 import logging
 import pytz
 
