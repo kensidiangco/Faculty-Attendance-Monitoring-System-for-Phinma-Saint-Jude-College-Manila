@@ -1,4 +1,4 @@
 #!/bin/bash
 
 # Start the APScheduler
-python manage.py runapscheduler &
+python3 manage.py runapscheduler &
