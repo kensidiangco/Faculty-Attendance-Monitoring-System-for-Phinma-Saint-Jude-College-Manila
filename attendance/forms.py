@@ -21,8 +21,9 @@ class EmployeeForm(forms.ModelForm):
             'employee_ID': forms.TextInput(attrs={
                 'placeholder': 'Employee ID',
                 'class': 'rounded-md p-2',
-                'required': True,
                 'oninput': 'this.value = this.value.toUpperCase()',
+                'autofocus': True,
+                'required': True,
             }),
             'name': forms.TextInput(attrs={
                 'placeholder': 'Name',
@@ -54,7 +55,8 @@ class DepartmentForm(forms.ModelForm):
                 'placeholder': 'Department name',
                 'class': 'rounded-md p-2',
                 'oninput': 'this.value = this.value.toUpperCase()',
-                'required': True
+                'autofocus': True,
+                'required': True,
             }),
             'address': forms.TextInput(attrs={
                 'placeholder': 'Address',
@@ -83,7 +85,8 @@ class SubjectForm(forms.ModelForm):
                 'placeholder': 'Subject Code',
                 'class': 'rounded-md p-2',
                 'oninput': 'this.value = this.value.toUpperCase()',
-                'required': True
+                'autofocus': True,
+                'required': True,
             }),
             'subject_name': forms.TextInput(attrs={
                 'placeholder': 'Subject name',
