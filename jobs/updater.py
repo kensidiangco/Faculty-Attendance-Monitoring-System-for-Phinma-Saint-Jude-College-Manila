@@ -1,7 +1,7 @@
 import logging
 import pytz
 from django.conf import settings
-from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from django_apscheduler.jobstores import DjangoJobStore
 from .jobs import update_sched_job, sched_time_out_tracker_job, delete_old_job_executions
@@ -9,7 +9,7 @@ from .jobs import update_sched_job, sched_time_out_tracker_job, delete_old_job_e
 logger = logging.getLogger(__name__)
 timezone = pytz.timezone('Asia/Manila')
 
-scheduler = BlockingScheduler(timezone=settings.TIME_ZONE)
+scheduler = BackgroundScheduler(timezone=settings.TIME_ZONE)
 scheduler.add_jobstore(DjangoJobStore(), "default")
 
 def start_jobs():
