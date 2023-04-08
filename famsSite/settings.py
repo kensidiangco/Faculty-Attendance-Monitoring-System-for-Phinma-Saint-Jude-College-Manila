@@ -18,12 +18,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'famsSite.apps.attendance',
+    'attendance.apps.AttendanceConfig',
+    'theme.apps.ThemeConfig',
     'rest_framework',
     
     "corsheaders",
     'tailwind',
-    'theme.apps.ThemeConfig',
     'django_browser_reload',
     'django_select2',
     "django_apscheduler",
