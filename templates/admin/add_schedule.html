@@ -57,5 +57,12 @@
     <script>
         let today = new Date().toISOString().split('T')[0];
         document.getElementsByName("expiration")[0].setAttribute('min', today);
+
+        window.addEventListener('load', function() {
+            document.querySelector(".loader-bg").style.display = "none";
+        });
+        window.addEventListener('beforeunload', function() {
+            document.querySelector(".loader-bg").style.display = "flex";
+        });
     </script>
 {% endblock content %}

@@ -42,4 +42,13 @@
         </div>
     </div>
 
+    <script>
+        window.addEventListener('load', function() {
+            document.querySelector(".loader-bg").style.display = "none";
+        });
+        window.addEventListener('beforeunload', function() {
+            document.querySelector(".loader-bg").style.display = "flex";
+        });
+    </script>
+
 {% endblock content %}

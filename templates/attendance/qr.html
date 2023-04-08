@@ -48,6 +48,13 @@
                 document.getElementById("date-time").innerHTML = dateTime;
             }
             setInterval(updateDateTime, 1000);
+
+            window.addEventListener('load', function() {
+                document.querySelector(".loader-bg").style.display = "none";
+            });
+            window.addEventListener('beforeunload', function() {
+                document.querySelector(".loader-bg").style.display = "flex";
+            });
         </script>
     {% endblock script %}
 {% endblock content %}
