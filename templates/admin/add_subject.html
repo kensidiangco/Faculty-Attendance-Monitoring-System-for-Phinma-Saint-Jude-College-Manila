@@ -4,7 +4,7 @@
 
 {% block content %}
     <p class="font-bold text-xl text-gray-600">CREATE SUBJECT</p>
-    <p class="text-sm">{{date_today}}</p>
+    <p id="date-time" class="text-sm"></p>
     <div class="flex justify-center items-center">
         <div class="bg-white p-4 rounded-md shadow-xl w-7/12">
             {% for message in messages %}

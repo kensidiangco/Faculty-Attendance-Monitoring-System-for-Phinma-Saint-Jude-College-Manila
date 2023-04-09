@@ -42,12 +42,6 @@
             }).catch(function (e) {
                 console.error(e);
             });    
-            function updateDateTime() {
-                const now = new Date();
-                const dateTime = now.toLocaleString();
-                document.getElementById("date-time").innerHTML = dateTime;
-            }
-            setInterval(updateDateTime, 1000);
 
             window.addEventListener('load', function() {
                 document.querySelector(".loader-bg").style.display = "none";

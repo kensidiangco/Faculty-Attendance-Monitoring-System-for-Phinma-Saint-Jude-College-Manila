@@ -1,7 +1,5 @@
-import pytz
 import json
 import qrcode
-from io import BytesIO
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
@@ -14,9 +12,6 @@ from django.core.paginator import Paginator
 from datetime import datetime, time, date, timedelta
 from django.shortcuts import get_object_or_404
 from .utils import export_attendance_excel, Time_in_sched, Time_out_sched
-
-timezone = pytz.timezone('Asia/Manila')
-date_today = datetime.now(timezone).strftime('%B %d, %Y %I:%M %p')
 
 def Login_page(request):
     if request.user.is_authenticated:
@@ -48,7 +43,6 @@ def Admin_dashboard(request):
     departments = Department.objects.all().count()
     schedules = Schedule.objects.all().count()
     ctx = {
-        'date_today': date_today,
         'employees': employees,
         'departments': departments,
         'schedules': schedules
@@ -83,7 +77,8 @@ def QRPage(request):
                 emp_in = time(hour=hr_in, minute=30, second=0)
                 emp_in_later = time(hour=int(current_time.strftime("%H")) + 1, minute=0, second=0)
                 sched = emp.schedule_set.all().filter(time_in__range=(emp_in, emp_in_later), status="VACANT").order_by('time_in')
-                # Check if QR Data is valid
+
+                # Check if sched is valid
                 expiration_date = datetime.strptime(str(sched.last().expiration_date), '%Y-%m-%d')
                 current_date = date.today()
 
@@ -91,7 +86,6 @@ def QRPage(request):
                     raise KeyError 
                 
                 if sched:
-
                     if str(sched.last().weekday).upper() == datetime.now().strftime('%A').upper():
                         Time_in_sched(sched, emp)
                         return HttpResponseRedirect(reverse('DTR_Export'))
@@ -110,7 +104,7 @@ def QRPage(request):
 
         except KeyError:
             print("INVALID QR CODE")
-            return render(request, './attendance/error/expired_qr.html')
+            return render(request, './attendance/error/expired_schedule.html')
 
         except:
             print("ERROR")
@@ -125,6 +119,7 @@ def QRSuccessPage(request):
 
 @login_required(login_url=reverse_lazy("Login_page"))
 def DTR_Export(request):
+
     employee_records = Employee_DTR.objects.all().order_by('-date_created') 
     current_date = datetime.now()
     SY_now = employee_records.filter(date_created__range=[datetime(current_date.year, 1, 1), datetime(current_date.year, 12, 31)])
@@ -144,7 +139,6 @@ def DTR_Export(request):
     ctx ={
         'page_obj': page_obj,
         'records_count': records_count,
-        'date_today': date_today,
     }
     return render(request, './admin/dtr_export.html', ctx)
 
@@ -166,7 +160,6 @@ def Add_Employee_Page(request):
             messages.error(request, "Employee ID must be unique.")
     ctx = {
         'form' : form,
-        'date_today': date_today
     }
     return render(request, './admin/add_employee.html',ctx)
 
@@ -187,7 +180,6 @@ def Add_Department_Page(request):
             messages.error(request, 'Department name must be unique (Do not double click the submit button!)')
     ctx = {
         'form' : form,
-        'date_today': date_today
     }
     return render(request, './admin/add_department.html',ctx)
 
@@ -209,7 +201,6 @@ def Add_Subject_Page(request):
 
     ctx = {
         'form' : form,
-        'date_today': date_today
     }
     return render(request, './admin/add_subject.html',ctx)
 
@@ -230,7 +221,6 @@ def Add_Schedule_Page(request):
 
     ctx = {
         'form' : form,
-        'date_today': date_today
     }
     return render(request, './admin/add_schedule.html',ctx)
 
@@ -242,7 +232,6 @@ def Employee_list(request):
     page_obj = paginator.get_page(page_number)
     emps_count = len(emps)
     ctx = {
-        'date_today': date_today,
         'emps': emps,
         'emps_count': emps_count,
         'page_obj': page_obj
@@ -277,7 +266,6 @@ def Employee_page(request, pk):
         'scheds_count': scheds_count,
         'late_count': late_count,
         'not_late_count': not_late_count,
-        'date_today': date_today,
     }
     return render(request, 'employee/employee_details.html', ctx)
 
@@ -289,7 +277,6 @@ def Department_list(request):
     page_obj = paginator.get_page(page_number)
     depts_count = len(depts)
     ctx = {
-        'date_today': date_today,
         'depts': depts,
         'depts_count': depts_count,
         'page_obj': page_obj

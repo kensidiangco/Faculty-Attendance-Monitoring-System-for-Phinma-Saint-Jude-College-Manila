@@ -69,11 +69,17 @@
         {% endif %}
 
         <script>
+            function updateDateTime() {
+                const now = new Date();
+                const dateTime = now.toLocaleString();
+                document.getElementById("date-time").innerHTML = dateTime;
+            }
+            setInterval(updateDateTime, 1000);
+            
             document.addEventListener("DOMContentLoaded", function() {
                 document.querySelector(".loader-bg").style.display = "none";
             });
-        </script>
-        <script>
+
             $(document).ready(function() {
                 $('#myForm').submit(function() {
                 $('#loader').removeClass('hidden');

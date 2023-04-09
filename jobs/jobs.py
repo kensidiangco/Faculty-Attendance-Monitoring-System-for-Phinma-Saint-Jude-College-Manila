@@ -16,7 +16,7 @@ def update_sched_job():
     print("running")
     done_scheds = Schedule.objects.filter(status="DONE")
     for sched in done_scheds:
-        if str(sched.weekday).upper() == datetime.now().strftime('%A').upper():
+        if str(sched.weekday).upper() == datetime.now(timezone).strftime('%A').upper():
             sched.status = "VACANT"
             sched.save()
         else:
@@ -28,7 +28,7 @@ def sched_time_out_tracker_job():
     print("running")
     ongoing_dtrs = Employee_DTR.objects.filter(status="ONGOING")
     for dtr in ongoing_dtrs:
-        if dtr.schedule.time_out < datetime.now().time():
+        if dtr.schedule.time_out < datetime.now(timezone).time():
             dtr.time_out = datetime.now(timezone)
             dtr.save()
         else:
