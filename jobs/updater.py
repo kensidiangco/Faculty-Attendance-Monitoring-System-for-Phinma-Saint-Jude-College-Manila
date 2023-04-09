@@ -19,7 +19,6 @@ def start_jobs():
         update_sched_job,
         trigger=CronTrigger(hour='0', minute='0'),  # Every midnight
         id="update_sched_job_{}".format(job_id),  # The `id` assigned to each job MUST be unique
-        max_instances=1,
         replace_existing=True,
         misfire_grace_time=3600,
     )
@@ -29,7 +28,6 @@ def start_jobs():
         sched_time_out_tracker_job,
         trigger=CronTrigger(minute='*/5'), # Run every 5 mins
         id="sched_time_out_tracker_job_{}".format(job_id),
-        max_instance=1,
         replace_existing=True,
         misfire_grace_time=3600,
     )
@@ -41,7 +39,6 @@ def start_jobs():
             hour="0", minute="0"
         ),  # Midnight on Monday, before start of the next work week.
         id="delete_old_job_executions_{}".format(job_id),
-        max_instances=1,
         replace_existing=True,
         misfire_grace_time=3600,
     )
