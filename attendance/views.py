@@ -56,8 +56,8 @@ def HomePage(request):
 def QRPage(request):
     if request.method == 'POST':
         qr_code_content = request.POST.get('qr_code_content')
-        data = json.loads(qr_code_content)
         try:
+            data = json.loads(qr_code_content)
             # Check if QR Data is valid
             # expiration_date = datetime.strptime(data['expiration'], '%Y-%m-%d')
             # current_date = date.today()

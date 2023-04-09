@@ -60,6 +60,7 @@
                     <tr class="border boreder-2 bg-[#52735D] rounded-md text-white">
                         <th class="p-2 rounded-md">EMPLOYEE ID</th>
                         <th class="p-2 rounded-md">NAME</th>
+                        <th class="p-2 rounded-md">SUBJECT</th>
                         <th class="p-2 rounded-md">DATE</th>
                         <th class="p-2 rounded-md">WEEKDAY</th>
                         <th class="p-2 rounded-md">TIME IN</th>
@@ -76,6 +77,11 @@
                     <tr class="border boreder-2 hover:bg-gray-200 active:bg-gray-200 transition transition-delay-1 cursor-pointer">
                         <td class="p-2">{{record.employee.employee_ID|upper}}</td>
                         <td class="p-2">{{record.employee.name|upper}}</td>
+                        {% if record.schedule.subject.subject_code == None %}
+                            <td class="p-2">Not implemented before</td>
+                        {% else %}
+                            <td class="p-2">{{record.schedule.subject.subject_code|upper}}</td>
+                        {% endif %}
                         <td class="p-2">{{record.date_in}}</td>
                         <td class="p-2">{{record.weekday|upper}}</td>
                         <td class="p-2">{{record.time_in|timezone:"Asia/Manila"|date:"P"}}</td>
