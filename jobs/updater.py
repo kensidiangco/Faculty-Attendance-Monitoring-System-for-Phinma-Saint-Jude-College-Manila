@@ -46,7 +46,7 @@ def start_jobs():
         misfire_grace_time=3600,
     )
     logger.info(
-        "Added weekly job: 'delete_old_job_executions'."
+        "Added half day job: 'delete_old_job_executions'."
     )
 
     try:
