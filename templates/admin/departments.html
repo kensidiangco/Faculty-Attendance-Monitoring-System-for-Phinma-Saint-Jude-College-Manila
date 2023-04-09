@@ -49,7 +49,7 @@
             </div>
         </div>
     </div>
-    <div id="myModal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center hidden">
+    <div id="myModal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center hidden z-50">
         <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
         <div id="loading" style="display: none;">Loading...</div>
 
@@ -81,7 +81,7 @@
                     var parent = $('<div class="mt-2 flex flex-col gap-2">');
                     $.each(data.employees, function(index, emp) {
                         var div = $('<div>');
-                        div.append($('<p class="text-sm font-bold text-gray-600">').text(emp.position.position));
+                        div.append($('<p class="text-sm font-bold text-gray-600">').text(emp.position));
                         div.append($('<p class="font-bold">').text(emp.name));
                         parent.append(div);
                     });

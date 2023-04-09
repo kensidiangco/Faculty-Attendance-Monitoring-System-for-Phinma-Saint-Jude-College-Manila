@@ -37,12 +37,12 @@ class Subject(models.Model):
         return self.subject_name
 
 class Employee(models.Model):
-    POSITION_CHOICES = [
+    EMPLOYEE_STATUS_CHOICES = [
         ('CONTRACTUAL', 'CONTRACTUAL'),
         ('PART TIME', 'PART TIME'),
         ('REGULAR', 'REGULAR'),
     ]
-    EMPLOYEE_STATUS_CHOICES = [
+    POSITION_CHOICES = [
         ('DEAN', 'DEAN'),
         ('PROFESSOR', 'PROFESSOR'),
         ('PROGRAM HEAD', 'PROGRAM HEAD'),
