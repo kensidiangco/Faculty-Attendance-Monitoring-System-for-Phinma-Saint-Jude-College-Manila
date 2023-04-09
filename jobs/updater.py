@@ -21,6 +21,7 @@ def start_jobs():
         id="update_sched_job_{}".format(job_id),  # The `id` assigned to each job MUST be unique
         max_instances=1,
         replace_existing=True,
+        misfire_grace_time=3600,
     )
     logger.info("Added job 'update_sched_job'.")
 
@@ -30,7 +31,7 @@ def start_jobs():
         id="sched_time_out_tracker_job_{}".format(job_id),
         max_instance=1,
         replace_existing=True,
-        misfire_grace_time=64,
+        misfire_grace_time=3600,
     )
     logger.info("Added job 'sched_time_out_tracker_job'.")
 
