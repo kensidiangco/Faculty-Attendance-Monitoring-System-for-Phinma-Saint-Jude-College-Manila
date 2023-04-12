@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 timezone = pytz.timezone('Asia/Manila')
 
 @util.close_old_connections
-def delete_old_job_executions(max_age=43_200):
+def delete_old_job_executions(max_age=604_800):
     DjangoJobExecution.objects.delete_old_job_executions(max_age)
 
 def update_sched_job():
@@ -20,7 +20,6 @@ def update_sched_job():
             sched.status = "VACANT"
             sched.save()
         else:
-            print("SCHEDULE ALREADY UPDATED...")
             logger.info("SCHEDULE ALREADY UPDATED...")
     logger.info("SCHEDULE STATUS UPDATED...")
     
@@ -32,6 +31,5 @@ def sched_time_out_tracker_job():
             dtr.time_out = datetime.now(timezone)
             dtr.save()
         else:
-            print("DTR TIME OUT ALREADY UPDATED...")
             logger.info("DTR TIME OUT ALREADY UPDATED...")
     logger.info("DTR TIME OUT UPDATED...")
