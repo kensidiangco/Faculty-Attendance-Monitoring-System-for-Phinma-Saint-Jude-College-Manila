@@ -12,13 +12,12 @@ timezone = pytz.timezone('Asia/Manila')
 
 scheduler = BackgroundScheduler(timezone=settings.TIME_ZONE)
 scheduler.add_jobstore(DjangoJobStore(), "default")
-job_id = str(uuid.uuid4()) 
 
 def start_jobs():
     scheduler.add_job(
         update_sched_job,
         trigger=CronTrigger(hour='0', minute='0'),  
-        id="update_sched_job_{}".format(job_id),  
+        id="update_sched_job",  
         max_instances=1,
         replace_existing=True,
         misfire_grace_time=3600,
@@ -28,7 +27,7 @@ def start_jobs():
     scheduler.add_job(
         sched_time_out_tracker_job,
         trigger=CronTrigger(minute='*/5'), 
-        id="sched_time_out_tracker_job_{}".format(job_id),
+        id="sched_time_out_tracker_job",
         max_instances=1,
         replace_existing=True,
         misfire_grace_time=3600,
@@ -40,7 +39,7 @@ def start_jobs():
         trigger=CronTrigger(
             day_of_week="mon", hour="00", minute="00"
         ),  
-        id="delete_old_job_executions_{}".format(job_id),
+        id="delete_old_job_executions",
         max_instances=1,
         replace_existing=True,
         misfire_grace_time=3600,
