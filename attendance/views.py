@@ -65,7 +65,7 @@ def QRPage(request):
             # if current_date > expiration_date.date():
             #     raise KeyError 
             
-            emp = Employee.objects.get(employee_ID=str(data['employee_id']))
+            emp = Employee.objects.get(employee_ID=str(data['employee_id']).upper())
             if emp.status == "INACTIVE":
                 raise KeyError
             # Check if professor is out if true then proceed to time in else time out
@@ -76,6 +76,7 @@ def QRPage(request):
                 hr_in = int(one_hour_ago.strftime("%H"))
                 emp_in = time(hour=hr_in, minute=30, second=0)
                 emp_in_later = time(hour=int(current_time.strftime("%H")) + 1, minute=0, second=0)
+                print(emp_in_later)
                 sched = emp.schedule_set.all().filter(time_in__range=(emp_in, emp_in_later), status="VACANT").order_by('time_in')
 
                 # Check if sched is valid
