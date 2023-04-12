@@ -112,11 +112,11 @@ class ScheduleForm(forms.ModelForm):
         model = Schedule
         fields = {'employee', 'subject', 'weekday', 'time_in', 'time_out', 'expiration_date'}
         widgets = {
-            'employee': EmployeeWidget(attrs={
+            'employee': forms.Select(attrs={
                 'class': 'rounded-md p-2',
                 'required': True
             }),
-            'subject': SubjectWidget(attrs={
+            'subject': forms.Select(attrs={
                 'class': 'rounded-md p-2',
                 'required': True
             }),
