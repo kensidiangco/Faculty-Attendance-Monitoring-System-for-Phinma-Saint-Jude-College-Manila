@@ -1,14 +1,9 @@
-from celery.task import periodic_task
-from celery.schedules import crontab
-from django.utils import timezone
-from .models import Schedule
+from attendance.models import Schedule
+from celery import shared_task
 
-@periodic_task(run_every=crontab(hour=0, minute=0))
-def update_model_data():
-    # Retrieve the data to be updated
-    data = 'VACANT'
-    
-    # Update the model
-    for obj in Schedule.objects.all():
-        obj.attendance_status = data
-        obj.save()
+@shared_task
+def update_schedule_status():
+    schedules = Schedule.objects.filter(status='DONE')
+    for schedule in schedules:
+        schedule.status = 'VACANT'
+        schedule.save()

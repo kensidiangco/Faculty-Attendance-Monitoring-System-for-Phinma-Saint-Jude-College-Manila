@@ -36,9 +36,7 @@ def start_jobs():
 
     scheduler.add_job(
         delete_old_job_executions,
-        trigger=CronTrigger(
-            day_of_week="mon", hour="00", minute="00"
-        ),  
+        trigger=CronTrigger(minute='*/5'),  
         id="delete_old_job_executions",
         max_instances=1,
         replace_existing=True,

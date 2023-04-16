@@ -1,5 +1,4 @@
 {% load static %}
-{% load static tailwind_tags %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -10,7 +9,6 @@
         
         <title>{% block title %}{% endblock title %}</title>
         {% block head_content %}{% endblock head_content %}
-        {% tailwind_css %}
         <link rel="stylesheet" href="{% static 'base.css' %}">
         <link rel="icon" type="image/png" href="{% static 'images/sjc_icon.ico ' %}">
         {% include './components/style.html' %}

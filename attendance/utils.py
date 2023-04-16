@@ -1,12 +1,20 @@
 import xlwt 
+import pytz
 from datetime import date
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Employee_DTR, Schedule
 from datetime import datetime, time
-import pytz
+from django.core.paginator import Paginator
 
 timezone = pytz.timezone('Asia/Manila')
+
+def Pagination_feature(request, item, page):
+    paginator = Paginator(item, page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return page_obj
 
 def Time_in_sched(sched, emp):
     # Getting time difference of time today and time in sched to determine if employee is late
@@ -39,6 +47,8 @@ def Time_in_sched(sched, emp):
     emp.status = 'IN'
     schd = Schedule.objects.get(id = sched.last().id)
     schd.status = 'ONGOING'
+
+    # Save all the changes
     emp_dtr.save()
     schd.save()
     emp.save()
@@ -79,12 +89,12 @@ def Time_out_sched(emp_dtr, emp):
         total_hours = "{}h {}m {}s".format(h,m,s)
 
     dtr.total_working_hours = total_hours
-    dtr.save() 
     schd = Schedule.objects.get(id = sched.last().id)
     schd.status = 'DONE'
-    schd.save()
-
     emp.status = 'OUT'
+
+    dtr.save() 
+    schd.save()
     emp.save()
 
 def export_attendance_excel(name, queryset):

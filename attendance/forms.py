@@ -1,17 +1,5 @@
 from django import forms
 from .models import Employee, Department, Schedule, Subject
-from django_select2 import forms as s2forms
-
-class EmployeeWidget(s2forms.ModelSelect2Widget):
-    search_fields = [
-        "name__icontains",
-    ]
-
-class SubjectWidget(s2forms.ModelSelect2Widget):
-    search_fields = [
-        "subject_code__icontains",
-        "subject_name__icontains",
-    ]
 
 class EmployeeForm(forms.ModelForm):
     class Meta:

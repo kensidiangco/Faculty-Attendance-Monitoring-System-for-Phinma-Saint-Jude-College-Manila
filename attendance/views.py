@@ -11,7 +11,7 @@ from .forms import EmployeeForm, DepartmentForm, SubjectForm, ScheduleForm
 from django.core.paginator import Paginator
 from datetime import datetime, time, date, timedelta
 from django.shortcuts import get_object_or_404
-from .utils import export_attendance_excel, Time_in_sched, Time_out_sched
+from .utils import export_attendance_excel, Time_in_sched, Time_out_sched, Pagination_feature
 
 def Login_page(request):
     if request.user.is_authenticated:
@@ -58,16 +58,11 @@ def QRPage(request):
         qr_code_content = request.POST.get('qr_code_content')
         try:
             data = json.loads(qr_code_content)
-            # Check if QR Data is valid
-            # expiration_date = datetime.strptime(data['expiration'], '%Y-%m-%d')
-            # current_date = date.today()
-
-            # if current_date > expiration_date.date():
-            #     raise KeyError 
-            
             emp = Employee.objects.get(employee_ID=str(data['employee_id']).upper())
+
             if emp.status == "INACTIVE":
                 raise KeyError
+            
             # Check if professor is out if true then proceed to time in else time out
             if emp.status == 'OUT' or emp.status == 'out':
                 # Check if professor has schedule today.
@@ -121,14 +116,13 @@ def QRSuccessPage(request):
 @login_required(login_url=reverse_lazy("Login_page"))
 def DTR_Export(request):
 
-    employee_records = Employee_DTR.objects.all().order_by('-date_created') 
+    employee_records = Employee_DTR.objects.all().order_by('-date_in') 
     current_date = datetime.now()
     SY_now = employee_records.filter(date_created__range=[datetime(current_date.year, 1, 1), datetime(current_date.year, 12, 31)])
-    paginator = Paginator(SY_now, 8)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+
+    page_obj = Pagination_feature(request, SY_now, 8)
     records_count = len(SY_now)
-    
+
     if request.method == 'POST':
         if 'export_dtr' in request.POST:
             DateFrom = request.POST.get('dateFrom')
@@ -228,15 +222,15 @@ def Add_Schedule_Page(request):
 @login_required(login_url=reverse_lazy("Login_page"))
 def Employee_list(request):
     emps = Employee.objects.all().order_by('-date_created')
-    paginator = Paginator(emps, 5)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    page_obj = Pagination_feature(request, emps, 5)
     emps_count = len(emps)
+
     ctx = {
         'emps': emps,
         'emps_count': emps_count,
         'page_obj': page_obj
     }
+
     return render(request, './admin/employees.html', ctx)
 
 @login_required(login_url=reverse_lazy("Login_page"))
@@ -252,9 +246,7 @@ def Employee_page(request, pk):
             queryset = dtrs.filter(date_in__range=[DateFrom, DateTo]).order_by('-date_in')
             return export_attendance_excel(emp.name, queryset)    
 
-    paginator = Paginator(scheds, 5)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    page_obj = Pagination_feature(request, scheds, 5)
     scheds_count = len(scheds)
 
     late_count = dtrs.filter(attendance_status="LATE").count()
@@ -268,30 +260,33 @@ def Employee_page(request, pk):
         'late_count': late_count,
         'not_late_count': not_late_count,
     }
+    
     return render(request, 'employee/employee_details.html', ctx)
 
 @login_required(login_url=reverse_lazy("Login_page"))
 def Department_list(request):
     depts = Department.objects.all().order_by('-department_name')
-    paginator = Paginator(depts, 5)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    page_obj = Pagination_feature(request, depts, 5)
     depts_count = len(depts)
+
     ctx = {
         'depts': depts,
         'depts_count': depts_count,
         'page_obj': page_obj
     }
+
     return render(request, './admin/departments.html', ctx)
 
 @login_required(login_url=reverse_lazy("Login_page"))
 def Department_page(request, pk):
     department = get_object_or_404(Department, pk=pk)
+
     response_data = {
         'id': department.id,
         'name': department.department_name,
         'employee': department.employee_set.all
     }
+    
     return JsonResponse(response_data)
 
 @login_required(login_url=reverse_lazy("Login_page"))
@@ -305,6 +300,7 @@ def Generate_QR_page(request):
                 'expiration': expiration,
                 'employee_id': employee_id
             }
+            
             # Parse data using json
             json_data = json.dumps(data)
             qr = qrcode.QRCode(version=12, box_size=30, border=2, error_correction=qrcode.constants.ERROR_CORRECT_L)
