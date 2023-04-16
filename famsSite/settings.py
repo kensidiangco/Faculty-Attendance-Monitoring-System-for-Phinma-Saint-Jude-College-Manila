@@ -1,14 +1,6 @@
 import os
 from pathlib import Path
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'famsSite.settings'
-
-SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
-
-TEMPLATE_DIRS = (
-    os.path.join(SETTINGS_PATH, 'templates'),
-)
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ['SECRET_KEY']
 
