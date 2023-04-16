@@ -1,6 +1,14 @@
 import os
 from pathlib import Path
 
+os.environ['DJANGO_SETTINGS_MODULE'] = 'famsSite.settings'
+
+SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
+
+TEMPLATE_DIRS = (
+    os.path.join(SETTINGS_PATH, 'templates'),
+)
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ['SECRET_KEY']
 
@@ -25,19 +33,22 @@ INSTALLED_APPS = [
     "corsheaders",
     'tailwind',
     'django_browser_reload',
-    'django_select2',
     "django_apscheduler",
+    'django_celery_results',
 ]
+
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 APSCHEDULER_RUN_NOW_TIMEOUT = 59  # Seconds
 
-# TAILWIND_APP_NAME = 'theme'
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_RESULT_SERIALIZER = 'json'
 
-# INTERNAL_IPS = [
-#     "127.0.0.1",
-# ]
-
-# NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
+TAILWIND_APP_NAME = 'theme'
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 
 MIDDLEWARE = [
     "django_browser_reload.middleware.BrowserReloadMiddleware",
@@ -87,21 +98,6 @@ DATABASES = {
         'PASSWORD': os.environ['DB_PSSWRD'],
         'HOST': os.environ['DB_HOST'],
         'PORT': os.environ['DB_PORT'],
-    }
-}
-
-# Use DjangoJobStore with PostgreSQL
-jobstores = {
-    'default': {
-        'type': 'djangojobstore',
-        'database': 'default'
-    }
-}
-
-# Use the default ThreadPoolExecutor with PostgreSQL
-executors = {
-    'default': {
-        'type': 'threadpool'
     }
 }
 
