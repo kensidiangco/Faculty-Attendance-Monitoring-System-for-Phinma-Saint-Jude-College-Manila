@@ -1,4 +1,5 @@
 {% load static %}
+{% load static tailwind_tags %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -11,6 +12,7 @@
         {% block head_content %}{% endblock head_content %}
         <link rel="stylesheet" href="{% static 'base.css' %}">
         <link rel="icon" type="image/png" href="{% static 'images/sjc_icon.ico ' %}">
+        {% tailwind_css %}
         {% include './components/style.html' %}
         <style id="smooth-scroll">
             ::-webkit-scrollbar {
