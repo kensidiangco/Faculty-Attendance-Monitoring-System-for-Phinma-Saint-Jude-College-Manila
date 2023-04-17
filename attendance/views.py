@@ -1,5 +1,7 @@
 import json
 import qrcode
+import pytz
+from django.utils import timezone
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
@@ -60,28 +62,28 @@ def QRPage(request):
             data = json.loads(qr_code_content)
             emp = Employee.objects.get(employee_ID=str(data['employee_id']).upper())
 
-            if emp.status == "INACTIVE":
+            if emp.working_status == "INACTIVE":
                 raise KeyError
             
             # Check if professor is out if true then proceed to time in else time out
             if emp.status == 'OUT' or emp.status == 'out':
                 # Check if professor has schedule today.
-                current_time = datetime.now()
-                one_hour_ago = current_time - timedelta(hours=1)
-                hr_in = int(one_hour_ago.strftime("%H"))
-                emp_in = time(hour=hr_in, minute=30, second=0)
-                emp_in_later = time(hour=int(current_time.strftime("%H")) + 1, minute=0, second=0)
-                print(emp_in_later)
-                sched = emp.schedule_set.all().filter(time_in__range=(emp_in, emp_in_later), status="VACANT").order_by('time_in')
+                manila_tz = pytz.timezone('Asia/Manila')
+                current_time = timezone.now().astimezone(manila_tz)
+                half_hour_ago = current_time - timedelta(minutes=30)
+                one_hour_later = current_time + timedelta(hours=1)
 
-                # Check if sched is valid
-                expiration_date = datetime.strptime(str(sched.last().expiration_date), '%Y-%m-%d')
-                current_date = date.today()
+                print(current_time,half_hour_ago,one_hour_later )
 
-                if current_date > expiration_date.date():
-                    raise KeyError 
+                sched = emp.schedule_set.all().filter(time_in__range=[half_hour_ago, one_hour_later], status="VACANT").order_by('time_in')
                 
                 if sched:
+                    # Check if sched is valid
+                    expiration = datetime.strptime(str(sched.last().expiration_date), '%Y-%m-%d')
+                    current_date = date.today()
+                    if current_date > expiration.date():
+                        raise KeyError 
+
                     if str(sched.last().weekday).upper() == datetime.now().strftime('%A').upper():
                         Time_in_sched(sched, emp)
                         return HttpResponseRedirect(reverse('DTR_Export'))
