@@ -7,7 +7,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 DEBUG = False
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
-ALLOWED_HOSTS = ['fams-sjc.azurewebsites.net', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['fams-sjc.azurewebsites.net']
 CSRF_TRUSTED_ORIGINS = ['https://'+ os.environ['WEBSITE_HOSTNAME']]
 
 INSTALLED_APPS = [
@@ -17,13 +17,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'attendance.apps.AttendanceConfig',
-    'theme.apps.ThemeConfig',
-    'rest_framework',
-    
-    "corsheaders",
     'tailwind',
+    'theme',
+    "corsheaders",
+    'rest_framework',
     'django_browser_reload',
     "django_apscheduler",
     'django_celery_results',
@@ -35,12 +33,7 @@ APSCHEDULER_RUN_NOW_TIMEOUT = 59  # Seconds
 CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_RESULT_SERIALIZER = 'json'
-
 TAILWIND_APP_NAME = 'theme'
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
-NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 
 MIDDLEWARE = [
     "django_browser_reload.middleware.BrowserReloadMiddleware",
@@ -74,13 +67,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'famsSite.wsgi.application'
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
 DATABASES = {
     'default': {

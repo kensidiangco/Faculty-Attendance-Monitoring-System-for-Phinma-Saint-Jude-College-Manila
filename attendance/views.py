@@ -73,8 +73,6 @@ def QRPage(request):
                 half_hour_ago = current_time - timedelta(minutes=30)
                 one_hour_later = current_time + timedelta(hours=1)
 
-                print(current_time,half_hour_ago,one_hour_later )
-
                 sched = emp.schedule_set.all().filter(time_in__range=[half_hour_ago, one_hour_later], status="VACANT").order_by('time_in')
                 
                 if sched:
@@ -107,7 +105,6 @@ def QRPage(request):
         except:
             print("ERROR")
             return render(request, './attendance/error/error_attendance.html')
-
             
     return render(request, './attendance/qr.html')
 
