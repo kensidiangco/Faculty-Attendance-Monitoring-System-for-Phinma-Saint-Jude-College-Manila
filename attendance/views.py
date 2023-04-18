@@ -115,7 +115,7 @@ def QRSuccessPage(request):
 @login_required(login_url=reverse_lazy("Login_page"))
 def DTR_Export(request):
 
-    employee_records = Employee_DTR.objects.all().order_by('-date_in') 
+    employee_records = Employee_DTR.objects.all().order_by('-time_in') 
     current_date = datetime.now()
     SY_now = employee_records.filter(date_created__range=[datetime(current_date.year, 1, 1), datetime(current_date.year, 12, 31)])
 
