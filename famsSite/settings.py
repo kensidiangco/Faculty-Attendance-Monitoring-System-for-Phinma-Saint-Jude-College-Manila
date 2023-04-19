@@ -4,7 +4,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ['SECRET_KEY']
 
-DEBUG = True
+DEBUG = False
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
 ALLOWED_HOSTS = ['fams-sjc.azurewebsites.net']
