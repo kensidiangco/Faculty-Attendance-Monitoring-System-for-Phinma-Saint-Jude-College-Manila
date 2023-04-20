@@ -1,5 +1,6 @@
 from django import forms
 from .models import Employee, Department, Schedule, Subject
+from datetime import date
 
 class EmployeeForm(forms.ModelForm):
     class Meta:
@@ -127,5 +128,6 @@ class ScheduleForm(forms.ModelForm):
                 'name': 'expiration',
                 'type': 'date',
                 'required': True,
+                'min': date.today(),
             }),
         }
