@@ -3,7 +3,7 @@
 {% block title %}FAMS | {{emp.name}}{% endblock title %}
 
 {% block content %}
-    <div class="flex flex-col gap-8">
+    <div class="flex flex-col gap-4">
         <label class="font-bold text-xl text-gray-600">EMPLOYEE INFORMATION</label>
         <p id="date-time" class="text-sm"></p>
         {% for message in messages %}
@@ -50,18 +50,21 @@
                 </div>
             </div>
             <div class="flex flex-col gap-2">
-                <label class="text-gray-600 font-bold">ATTENDANCE:</label>
                 <div class="flex flex-col">
                     <label class="text-sm text-gray-600 font-bold">STATUS:</label>
                     <p class="">{{emp.status}}</p>
                 </div>
                 <div class="flex flex-col">
                     <label class="text-sm text-gray-600 font-bold">LATE COUNT:</label>
-                    <p class="text-yellow-500 font-bold">{{late_count}}</p>
+                    <p class="text-yellow-500 font-bold text-xl">{{late_count}}</p>
                 </div>
                 <div class="flex flex-col">
                     <label class="text-sm text-gray-600 font-bold">NOT LATE COUNT:</label>
-                    <p class="text-green-500 font-bold">{{not_late_count}}</p>
+                    <p class="text-green-500 font-bold text-xl">{{not_late_count}}</p>
+                </div>
+                <div class="flex flex-col">
+                    <label class="text-sm text-gray-600 font-bold">ABSENT COUNT:</label>
+                    <p class="text-red-500 font-bold text-xl">{{absents}}</p>
                 </div>
             </div>
             
@@ -103,6 +106,7 @@
                             <th class="p-2 rounded-md">SEMESTER</th>
                             <th class="p-2 rounded-md">WEEKDAY</th>
                             <th class="p-2 rounded-md">IN & OUT</th>
+                            <th class="p-2 rounded-md">STATUS</th>
                             {% comment %} <th class="p-2 rounded-md">INFO</th> {% endcomment %}
                         </tr>
                         {% if scheds_count < 1 %}
@@ -118,6 +122,7 @@
                                     <td class="p-2">{{sched.subject.semester}}</td>
                                     <td class="p-2">{{sched.weekday}}</td>
                                     <td class="p-2">{{sched.time_in}} - {{sched.time_out}}</td>
+                                    <td class="p-2">{{sched.status|upper}}</td>
                                     {% comment %} <td class="p-2">
                                         <a href="" class="bg-green-600 py-2 px-4 rounded-md text-white hover:bg-green-500 transition transition-delay-1 text-center object-center">View</a>
                                     </td> {% endcomment %}

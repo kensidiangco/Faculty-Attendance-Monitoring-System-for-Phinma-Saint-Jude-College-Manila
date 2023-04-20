@@ -129,3 +129,12 @@ class Employee_DTR(models.Model):
             date_created__gte=datetime.now() - timedelta(minutes=1)
         )
         return len(recent_scans) > 0
+
+class Employee_Absence_Record(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
+    absent_date = models.DateTimeField(auto_now=False, auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True, auto_now_add=False)
+
+    def __str__(self):
+        return f'{self.employee.name}, {self.schedule.subject.subject_code}: ({self.absent_date})'

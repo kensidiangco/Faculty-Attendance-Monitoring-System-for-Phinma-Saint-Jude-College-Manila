@@ -5,7 +5,7 @@ from django.conf import settings
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from django_apscheduler.jobstores import DjangoJobStore
-from .jobs import update_sched_job, sched_time_out_tracker_job, delete_old_job_executions
+from .jobs import update_sched_job, sched_time_out_tracker_job, delete_old_job_executions, absent_sched_tracker_job
 
 logger = logging.getLogger(__name__)
 timezone = pytz.timezone('Asia/Manila')
@@ -42,9 +42,16 @@ def start_jobs():
         replace_existing=True,
         misfire_grace_time=3600,
     )
-    logger.info(
-        "Added half day job: 'delete_old_job_executions'."
+    logger.info("Added half day job: 'delete_old_job_executions'.")
+
+    scheduler.add_job(
+        absent_sched_tracker_job,
+        trigger=CronTrigger(minute='*/1'),  
+        id="absent_sched_tracker_job",
+        replace_existing=True,
+        misfire_grace_time=3600,
     )
+    logger.info("Added job: 'absent_sched_tracker_job'.")
 
     try:
         logger.info("Starting scheduler...")

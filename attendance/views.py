@@ -8,7 +8,7 @@ from django.urls import reverse, reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from .models import Employee, Employee_DTR, Department, Schedule
+from .models import Employee, Employee_DTR, Department, Schedule, Employee_Absence_Record
 from .forms import EmployeeForm, DepartmentForm, SubjectForm, ScheduleForm
 from django.core.paginator import Paginator
 from datetime import datetime, time, date, timedelta
@@ -70,10 +70,13 @@ def QRPage(request):
                 # Check if professor has schedule today.
                 manila_tz = pytz.timezone('Asia/Manila')
                 current_time = timezone.now().astimezone(manila_tz)
-                half_hour_ago = current_time - timedelta(minutes=30)
-                one_hour_later = current_time + timedelta(hours=1)
+                if current_time.hour == 0 and current_time.minute == 0:
+                    half_hour_ago = current_time.replace(hour=23, minute=30, second=0, microsecond=0)
+                else:
+                    half_hour_ago = current_time - timedelta(minutes=30)
+                half_hour_later = current_time + timedelta(minutes=30)
 
-                sched = emp.schedule_set.all().filter(time_in__range=[half_hour_ago, one_hour_later], status="VACANT").order_by('time_in')
+                sched = emp.schedule_set.all().filter(time_in__range=[half_hour_ago, half_hour_later], status="VACANT").order_by('time_in')
                 
                 if sched:
                     # Check if sched is valid
@@ -245,11 +248,12 @@ def Employee_page(request, pk):
             queryset = dtrs.filter(date_in__range=[DateFrom, DateTo]).order_by('-date_in')
             return export_attendance_excel(emp.name, queryset)    
 
-    page_obj = Pagination_feature(request, scheds, 5)
+    page_obj = Pagination_feature(request, scheds, 9)
     scheds_count = len(scheds)
 
     late_count = dtrs.filter(attendance_status="LATE").count()
     not_late_count = dtrs.filter(attendance_status="NOT LATE").count()
+    absents = Employee_Absence_Record.objects.filter(employee=pk).count()
 
     ctx = {
         'emp': emp,
@@ -258,6 +262,7 @@ def Employee_page(request, pk):
         'scheds_count': scheds_count,
         'late_count': late_count,
         'not_late_count': not_late_count,
+        'absents': absents,
     }
     
     return render(request, 'employee/employee_details.html', ctx)

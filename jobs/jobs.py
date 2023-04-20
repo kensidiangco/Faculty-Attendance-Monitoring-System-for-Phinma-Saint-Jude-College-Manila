@@ -1,6 +1,6 @@
 from django_apscheduler import util
 from django_apscheduler.models import DjangoJobExecution
-from attendance.models import Schedule, Employee_DTR
+from attendance.models import Schedule, Employee_DTR, Employee_Absence_Record
 from datetime import datetime, date
 import logging
 import pytz
@@ -21,7 +21,7 @@ def update_sched_job():
         expiration = datetime.strptime(str(sched.expiration_date), '%Y-%m-%d')
         current_date = date.today()
 
-        if str(sched.weekday).upper() == datetime.now(timezone).strftime('%A').upper() and current_date < expiration.date():
+        if str(sched.weekday).upper() == datetime.now(timezone).strftime('%A').upper() and current_date <= expiration.date():
             sched.status = "VACANT"
             sched.save()
         else:
@@ -36,6 +36,21 @@ def sched_time_out_tracker_job():
         if dtr.schedule.time_out < datetime.now(timezone).time():
             dtr.time_out = datetime.now(timezone)
             dtr.save()
+        else:
+            logger.info("DTR TIME OUT ALREADY UPDATED...")
+    logger.info("DTR TIME OUT UPDATED...")
+
+def absent_sched_tracker_job():
+    print("absent_sched_tracker_job")
+    vacant_scheds = Schedule.objects.filter(status="VACANT")
+    for sched in vacant_scheds:
+        if str(sched.weekday).upper() == datetime.now(timezone).strftime('%A').upper() and sched.time_out <= datetime.now(timezone).time():
+            Employee_Absence_Record.objects.create(
+                schedule = sched,
+                employee = sched.employee
+            )
+            sched.status = "ABSENT"
+            sched.save()
         else:
             logger.info("DTR TIME OUT ALREADY UPDATED...")
     logger.info("DTR TIME OUT UPDATED...")
