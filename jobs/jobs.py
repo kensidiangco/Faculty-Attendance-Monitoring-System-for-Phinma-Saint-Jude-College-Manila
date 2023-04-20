@@ -1,7 +1,7 @@
 from django_apscheduler import util
 from django_apscheduler.models import DjangoJobExecution
 from attendance.models import Schedule, Employee_DTR
-from datetime import datetime
+from datetime import datetime, date
 import logging
 import pytz
 
@@ -16,12 +16,17 @@ def delete_old_job_executions(max_age=3600):
 def update_sched_job():
     print("update_sched_job")
     done_scheds = Schedule.objects.filter(status="DONE")
+        
     for sched in done_scheds:
-        if str(sched.weekday).upper() == datetime.now(timezone).strftime('%A').upper():
+        expiration = datetime.strptime(str(sched.expiration_date), '%Y-%m-%d')
+        current_date = date.today()
+
+        if str(sched.weekday).upper() == datetime.now(timezone).strftime('%A').upper() and current_date < expiration.date():
             sched.status = "VACANT"
             sched.save()
         else:
-            logger.info("SCHEDULE ALREADY UPDATED...")
+            sched.status = "EXPIRED"
+            sched.save()
     logger.info("SCHEDULE STATUS UPDATED...")
     
 def sched_time_out_tracker_job():

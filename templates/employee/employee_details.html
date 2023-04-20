@@ -110,17 +110,19 @@
                                 <td colspan="10" class="p-4 text-gray-600 text-sm text-center">No schedule show. <a href="{% url 'Add_Schedule_Page' %}" class="text-blue-600">Assign Schedule<a></td>
                             </tr>
                         {% endif %}
-                        {% for sheds in page_obj %}
-                        <tr class="border boreder-2 hover:bg-gray-200 active:bg-gray-200 transition transition-delay-1 cursor-pointer">
-                            <td class="p-2">{{sheds.subject}}</td>
-                            <td class="p-2">{{sheds.subject.year}}</td>
-                            <td class="p-2">{{sheds.subject.semester}}</td>
-                            <td class="p-2">{{sheds.weekday}}</td>
-                            <td class="p-2">{{sheds.time_in}} - {{sheds.time_out}}</td>
-                            {% comment %} <td class="p-2">
-                                <a href="" class="bg-green-600 py-2 px-4 rounded-md text-white hover:bg-green-500 transition transition-delay-1 text-center object-center">View</a>
-                            </td> {% endcomment %}
-                        </tr>
+                        {% for sched in page_obj %}
+                            {% if sched.status != "EXPIRED"%}
+                                <tr class="border boreder-2 hover:bg-gray-200 active:bg-gray-200 transition transition-delay-1 cursor-pointer">
+                                    <td class="p-2">{{sched.subject}}</td>
+                                    <td class="p-2">{{sched.subject.year}}</td>
+                                    <td class="p-2">{{sched.subject.semester}}</td>
+                                    <td class="p-2">{{sched.weekday}}</td>
+                                    <td class="p-2">{{sched.time_in}} - {{sched.time_out}}</td>
+                                    {% comment %} <td class="p-2">
+                                        <a href="" class="bg-green-600 py-2 px-4 rounded-md text-white hover:bg-green-500 transition transition-delay-1 text-center object-center">View</a>
+                                    </td> {% endcomment %}
+                                </tr>
+                            {% endif %}
                         {% endfor %}
                     </table>
                     <div class="flex gap-2 items-center mx-2">
