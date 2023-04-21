@@ -5,7 +5,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ['SECRET_KEY']
 
 DEBUG = False
-DEBUG_PROPAGATE_EXCEPTIONS = True
 
 ALLOWED_HOSTS = ['fams-sjc.azurewebsites.net']
 CSRF_TRUSTED_ORIGINS = ['https://'+ os.environ['WEBSITE_HOSTNAME']]
@@ -46,7 +45,6 @@ CACHES = {
         'LOCATION': 'my_cache_table',
     }
 }
-
 
 TAILWIND_APP_NAME = 'theme'
 
