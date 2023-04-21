@@ -50,12 +50,6 @@ CACHES = {
 
 TAILWIND_APP_NAME = 'theme'
 
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
-
-NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
-
 MIDDLEWARE = [
     "django_browser_reload.middleware.BrowserReloadMiddleware",
     'corsheaders.middleware.CorsMiddleware',
@@ -89,36 +83,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'famsSite.wsgi.application'
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': os.environ['DB_ENGINE'],
-        'NAME': os.environ['DB_NAME'],
-        'USER': os.environ['DB_USER'],
-        'PASSWORD': os.environ['DB_PSSWRD'],
-        'HOST': os.environ['DB_HOST'],
-        'PORT': os.environ['DB_PORT'],
-    }
-}
-
-# Use DjangoJobStore with PostgreSQL
-jobstores = {
-    'default': {
-        'type': 'djangojobstore',
-        'database': 'default'
-    }
-}
-
-# Use the default ThreadPoolExecutor with PostgreSQL
-executors = {
-    'default': {
-        'type': 'threadpool'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
