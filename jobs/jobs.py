@@ -61,7 +61,7 @@ def absent_sched_tracker_job():
                 sched.status = "ABSENT"
                 sched.save()
             else:
-                logger.info("DTR TIME OUT ALREADY UPDATED...")
+                logger.info("ABSENT SCHED ALREADY UPDATED...")
     else:
         pass
-    logger.info("DTR TIME OUT UPDATED...")
+    logger.info("ABSENT SCHED UPDATED...")
