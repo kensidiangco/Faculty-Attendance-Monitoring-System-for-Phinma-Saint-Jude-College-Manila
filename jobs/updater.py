@@ -46,9 +46,9 @@ def start_jobs():
 
     scheduler.add_job(
         absent_sched_tracker_job,
-        trigger=CronTrigger(minute='*/1'),  
+        trigger=CronTrigger(minute='*/5'),  
         id="absent_sched_tracker_job",
-        replace_existing=True,
+        max_instances=1,
         misfire_grace_time=3600,
     )
     logger.info("Added job: 'absent_sched_tracker_job'.")
