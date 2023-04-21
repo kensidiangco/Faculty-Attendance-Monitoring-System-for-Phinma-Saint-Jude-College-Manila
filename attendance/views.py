@@ -76,7 +76,7 @@ def QRPage(request):
                     half_hour_ago = current_time - timedelta(minutes=30)
                 half_hour_later = current_time + timedelta(minutes=30)
 
-                sched = emp.schedule_set.all().filter(time_in__range=[half_hour_ago, half_hour_later], status="VACANT").order_by('time_in')
+                sched = emp.schedule_set.all().filter(time_in__range=[half_hour_ago, half_hour_later], status="PENDING").order_by('time_in')
                 
                 if sched:
                     # Check if sched is valid
