@@ -5,7 +5,7 @@ from django.conf import settings
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from django_apscheduler.jobstores import DjangoJobStore
-from .jobs import update_sched_job, sched_time_out_tracker_job, delete_old_job_executions, absent_sched_tracker_job, update_vacant_sched
+from .jobs import update_sched_job, sched_time_out_tracker_job, delete_old_job_executions, absent_sched_tracker_job
 import uuid
 
 logger = logging.getLogger(__name__)
@@ -53,15 +53,6 @@ def start_jobs():
         misfire_grace_time=3600,
     )
     logger.info("Added job: 'absent_sched_tracker_job'.")
-
-    scheduler.add_job(
-        update_vacant_sched,
-        trigger=CronTrigger(minute='*/1'),  
-        id="update_vacant_sched {}".format(uuid.uuid4()),
-        max_instances=1,
-        misfire_grace_time=3600,
-    )
-    logger.info("Added job: 'update_vacant_sched'.")
 
     try:
         logger.info("Starting scheduler...")

@@ -19,7 +19,7 @@ def Pagination_feature(request, item, page):
 def Time_in_sched(sched, emp):
     # Getting time difference of time today and time in sched to determine if employee is late
     dt = datetime.now()
-    time_in_sched = sched.last().time_in
+    time_in_sched = sched.time_in
     dt_and_time_in_sched = datetime.combine(dt.date(), time_in_sched)
     time_diff = dt - dt_and_time_in_sched
 
@@ -27,7 +27,7 @@ def Time_in_sched(sched, emp):
     if time_diff.total_seconds() > 0:
         emp_dtr = Employee_DTR.objects.create(
             employee=emp,
-            schedule=sched.last(),
+            schedule=sched,
             status='ONGOING',
             weekday=datetime.now(timezone).strftime('%A'),
             time_in=datetime.now(timezone),
@@ -37,7 +37,7 @@ def Time_in_sched(sched, emp):
     if time_diff.total_seconds() < 0:
         emp_dtr = Employee_DTR.objects.create(
             employee=emp,
-            schedule=sched.last(),
+            schedule=sched,
             status='ONGOING',
             weekday=datetime.now(timezone).strftime('%A'),
             time_in=datetime.now(timezone),
@@ -45,7 +45,7 @@ def Time_in_sched(sched, emp):
         )
     # Change the status for tracking the data
     emp.status = 'IN'
-    schd = Schedule.objects.get(id = sched.last().id)
+    schd = Schedule.objects.get(id = sched.id)
     schd.status = 'ONGOING'
 
     # Save all the changes
@@ -89,7 +89,7 @@ def Time_out_sched(emp_dtr, emp):
         total_hours = "{}h {}m {}s".format(h,m,s)
 
     dtr.total_working_hours = total_hours
-    schd = Schedule.objects.get(id = sched.last().id)
+    schd = Schedule.objects.get(id = sched.id)
     schd.status = 'DONE'
     emp.status = 'OUT'
 

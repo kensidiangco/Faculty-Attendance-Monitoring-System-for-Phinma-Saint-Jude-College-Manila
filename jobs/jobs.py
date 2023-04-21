@@ -55,6 +55,3 @@ def absent_sched_tracker_job():
         else:
             logger.info("ABSENT SCHED ALREADY UPDATED...")
     logger.info("SCHED UPDATED...")
-
-def update_vacant_sched():
-    Schedule.objects.filter(status='VACANT').update(status='PENDING')

@@ -8,6 +8,7 @@ from django.urls import reverse, reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.db.models import Min
 from .models import Employee, Employee_DTR, Department, Schedule, Employee_Absence_Record
 from .forms import EmployeeForm, DepartmentForm, SubjectForm, ScheduleForm
 from django.core.paginator import Paginator
@@ -68,24 +69,17 @@ def QRPage(request):
             # Check if professor is out if true then proceed to time in else time out
             if emp.status == 'OUT' or emp.status == 'out':
                 # Check if professor has schedule today.
-                manila_tz = pytz.timezone('Asia/Manila')
-                current_time = timezone.now().astimezone(manila_tz)
-                if current_time.hour == 0 and current_time.minute == 0:
-                    half_hour_ago = current_time.replace(hour=23, minute=30, second=0, microsecond=0)
-                else:
-                    half_hour_ago = current_time - timedelta(minutes=30)
-                half_hour_later = current_time + timedelta(minutes=30)
-
-                sched = emp.schedule_set.all().filter(time_in__range=[half_hour_ago, half_hour_later], status="PENDING").order_by('time_in')
+                earliest_start_time = Schedule.objects.filter(employee=emp.id, status="PENDING").aggregate(Min('time_in'))['time_in__min']
+                sched = Schedule.objects.filter(employee=emp.id, time_in=earliest_start_time).first()
                 
                 if sched:
                     # Check if sched is valid
-                    expiration = datetime.strptime(str(sched.last().expiration_date), '%Y-%m-%d')
+                    expiration = datetime.strptime(str(sched.expiration_date), '%Y-%m-%d')
                     current_date = date.today()
                     if current_date > expiration.date():
                         raise KeyError 
 
-                    if str(sched.last().weekday).upper() == datetime.now().strftime('%A').upper():
+                    if str(sched.weekday).upper() == datetime.now().strftime('%A').upper():
                         Time_in_sched(sched, emp)
                         return HttpResponseRedirect(reverse('DTR_Export'))
                     else:
