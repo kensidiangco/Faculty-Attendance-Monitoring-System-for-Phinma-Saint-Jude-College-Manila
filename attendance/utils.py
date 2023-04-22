@@ -55,7 +55,7 @@ def Time_in_sched(sched, emp):
 
 def Time_out_sched(emp_dtr, emp):
     dtr = emp_dtr.get(employee=emp.id, status="ONGOING")
-    sched = emp.schedule_set.all().filter(status="ONGOING").order_by('time_in')
+    sched = emp.schedule_set.all().filter(employee=emp.id, status="ONGOING").order_by('time_in')
     dtr.status = 'DONE'
     timezone = pytz.timezone('Asia/Manila')
     dtr.time_out = datetime.now(timezone)
@@ -89,7 +89,7 @@ def Time_out_sched(emp_dtr, emp):
         total_hours = "{}h {}m {}s".format(h,m,s)
 
     dtr.total_working_hours = total_hours
-    schd = Schedule.objects.get(id = sched.id)
+    schd = Schedule.objects.get(id = sched.last().id)
     schd.status = 'DONE'
     emp.status = 'OUT'
 
