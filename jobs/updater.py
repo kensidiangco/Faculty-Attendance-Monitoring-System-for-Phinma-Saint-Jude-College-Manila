@@ -37,7 +37,7 @@ def start_jobs():
 
     scheduler.add_job(
         delete_old_job_executions,
-        trigger=CronTrigger(minute='*/5'),  
+        trigger=CronTrigger(hour='*/1'),  
         id="delete_old_job_executions {}".format(uuid.uuid4()),
         max_instances=1,
         replace_existing=True,
