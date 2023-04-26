@@ -2,7 +2,6 @@ import xlwt
 import pytz
 from datetime import date
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
 from .models import Employee_DTR, Schedule
 from datetime import datetime, time
 from django.core.paginator import Paginator

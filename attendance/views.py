@@ -1,7 +1,5 @@
 import json
 import qrcode
-import pytz
-from django.utils import timezone
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
@@ -11,8 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.db.models import Min
 from .models import Employee, Employee_DTR, Department, Schedule, Employee_Absence_Record
 from .forms import EmployeeForm, DepartmentForm, SubjectForm, ScheduleForm
-from django.core.paginator import Paginator
-from datetime import datetime, time, date, timedelta
+from datetime import datetime, date
 from django.shortcuts import get_object_or_404
 from .utils import export_attendance_excel, Time_in_sched, Time_out_sched, Pagination_feature
 
