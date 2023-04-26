@@ -10,11 +10,9 @@ timezone = pytz.timezone('Asia/Manila')
 
 @util.close_old_connections
 def delete_old_job_executions(max_age=3600):
-    print("delete_old_job_executions")
     DjangoJobExecution.objects.delete_old_job_executions(max_age)
 
 def update_sched_job():
-    print("update_sched_job")
     done_scheds = Schedule.objects.filter(status="DONE")
         
     for sched in done_scheds:
@@ -30,7 +28,6 @@ def update_sched_job():
     logger.info("SCHEDULE STATUS UPDATED...")
     
 def sched_time_out_tracker_job():
-    print("sched_time_out_tracker_job")
     ongoing_dtrs = Employee_DTR.objects.filter(status="ONGOING")
     
     for dtr in ongoing_dtrs:
@@ -42,7 +39,6 @@ def sched_time_out_tracker_job():
     logger.info("DTR TIME OUT UPDATED...")
 
 def absent_sched_tracker_job():
-    print("absent_sched_tracker_job")
     vacant_scheds = Schedule.objects.filter(status="PENDING")
     for sched in vacant_scheds:
         if str(sched.weekday).upper() == datetime.now(timezone).strftime('%A').upper() and sched.time_out <= datetime.now(timezone).time():
