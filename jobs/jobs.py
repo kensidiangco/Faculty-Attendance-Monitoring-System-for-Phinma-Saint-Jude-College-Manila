@@ -16,16 +16,22 @@ def update_sched_job():
     done_scheds = Schedule.objects.filter(status="DONE")
         
     for sched in done_scheds:
-        expiration = datetime.strptime(str(sched.expiration_date), '%Y-%m-%d')
-        current_date = date.today()
-
-        if str(sched.weekday).upper() == datetime.now(timezone).strftime('%A').upper() and current_date <= expiration.date():
+        if str(sched.weekday).upper() == datetime.now(timezone).strftime('%A').upper():
             sched.status = "PENDING"
             sched.save()
-        else:
+
+def expired_sched_job():
+    scheds = Schedule.objects.all()
+    current_date = date.today()
+    
+    for sched in scheds:
+        expiration = datetime.strptime(str(sched.expiration_date), '%Y-%m-%d')
+        if current_date <= expiration.date():
             sched.status = "EXPIRED"
             sched.save()
+
     logger.info("SCHEDULE STATUS UPDATED...")
+    print("Running: expired_sched_job")
     
 def sched_time_out_tracker_job():
     ongoing_dtrs = Employee_DTR.objects.filter(status="ONGOING")
@@ -37,6 +43,7 @@ def sched_time_out_tracker_job():
         else:
             logger.info("DTR TIME OUT ALREADY UPDATED...")
     logger.info("DTR TIME OUT UPDATED...")
+    print("Running: sched_time_out_tracker_job")
 
 def absent_sched_tracker_job():
     vacant_scheds = Schedule.objects.filter(status="PENDING")
@@ -51,3 +58,4 @@ def absent_sched_tracker_job():
         else:
             logger.info("ABSENT SCHED ALREADY UPDATED...")
     logger.info("SCHED UPDATED...")
+    print("Running: absent_sched_tracker_job")

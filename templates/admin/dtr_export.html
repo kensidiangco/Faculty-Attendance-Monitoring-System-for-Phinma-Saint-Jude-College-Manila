@@ -87,17 +87,19 @@
                         <td class="p-2">{{record.weekday|upper}}</td>
                         <td class="p-2">{{record.time_in|timezone:"Asia/Manila"|date:"P"}}</td>
                         {% if record.time_out == None %}
-                                <td>---</td>
-                            {% else %}
-                                <td>{{record.time_out|timezone:"Asia/Manila"|date:"P"}}</td>
-                            {% endif %}
+                            <td class="p-2">---</td>
+                        {% else %}
+                            <td class="p-2">{{record.time_out|timezone:"Asia/Manila"|date:"P"}}</td>
+                        {% endif %}
+
                         <td class="p-2">
                             {% if record.time_out == None %}
-                                Ongoing
+                                ONGOING
                             {% else %}
                                 {{record.total_hours}}
                             {% endif %}
                         </td>
+                        
                         <td class="p-2">
                             {% if record.attendance_status == None %}
                                 <p>Not implemented before.</p>
