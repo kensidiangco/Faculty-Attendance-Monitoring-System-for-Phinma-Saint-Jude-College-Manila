@@ -1,0 +1,21 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block title %}FAMS | Create Department{% endblock title %}
+
+{% block content %}
+<div class="flex justify-center items-center">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="excel_file" required>
+        <button type="submit">Import</button>
+    </form>
+</div>
+    <script>
+        window.addEventListener('load', function() {
+            document.querySelector(".loader-bg").style.display = "none";
+        });
+        window.addEventListener('beforeunload', function() {
+            document.querySelector(".loader-bg").style.display = "flex";
+        });
+    </script>
+{% endblock content %}

@@ -12,6 +12,7 @@ from .forms import EmployeeForm, DepartmentForm, SubjectForm, ScheduleForm
 from datetime import datetime, date
 from django.shortcuts import get_object_or_404
 from .utils import export_attendance_excel, Time_in_sched, Time_out_sched, Pagination_feature
+from openpyxl import load_workbook
 
 def Login_page(request):
     if request.user.is_authenticated:
@@ -170,6 +171,22 @@ def Add_Department_Page(request):
         'form' : form,
     }
     return render(request, './admin/add_department.html',ctx)
+
+@login_required(login_url=reverse_lazy("Login_page"))
+def import_Department_Page(request):
+
+    if request.method == 'POST':
+        excel_file = request.FILES['excel_file']
+        wb = load_workbook(excel_file)
+        ws = wb.active
+
+        for row in ws.iter_rows(min_row=2, values_only=True):
+            dept, address, room, floor = row
+            Department.objects.create(department_name=dept, address=address, room_no=room, floor=floor)
+
+        return render(request, 'import/import_success.html')
+
+    return render(request, './admin/import_department.html')
 
 @login_required(login_url=reverse_lazy("Login_page"))
 def Add_Subject_Page(request):
