@@ -11,6 +11,7 @@ urlpatterns = [
     path('dashboard', views.Admin_dashboard, name="Admin_dashboard"),
     path('create/employee', views.Add_Employee_Page, name="Add_Employee_Page"),
     path('create/department', views.Add_Department_Page, name="Add_Department_Page"),
+    path('import/department', views.import_Department_Page, name="import_Department_Page"),
     path('create/schedule', views.Add_Schedule_Page, name="Add_Schedule_Page"),
     path('create/subject', views.Add_Subject_Page, name="Add_Subject_Page"),
     path('employees', views.Employee_list, name="Employee_list"),
